@@ -3,652 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>道德经 · 函数学习系统</title>
-    <!-- 引入 Mermaid.js (画架构图) & html2canvas (截图分享) -->
+    <title>道德经 · 函数学习系统 (奥数版)</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="ddj-data.js"></script>
     <style>
+        /* ===== 样式沿用之前的，仅增加第5步按钮颜色 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #f3efe8;
-            font-family: 'Georgia', 'Songti SC', serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-        /* ===== 左侧导航 ===== */
-        .sidebar {
-            width: 280px;
-            background: #2d241c;
-            color: #ddd0c0;
-            padding: 20px 0;
-            overflow-y: auto;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-        }
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid #4a3f35;
-            margin-bottom: 15px;
-        }
-        .sidebar-header h2 {
-            font-weight: 300;
-            letter-spacing: 6px;
-            color: #f5efe6;
-            font-size: 20px;
-            text-align: center;
-        }
-        .sidebar-header .sub {
-            font-size: 12px;
-            color: #8a7b6b;
-            text-align: center;
-            letter-spacing: 2px;
-            margin-top: 4px;
-        }
-        /* 总览入口按钮 (Dashboard) */
-        .btn-overview {
-            display: block;
-            margin: 0 15px 15px;
-            padding: 12px;
-            background: #4a3f35;
-            color: #f5efe6;
-            text-align: center;
-            border-radius: 60px;
-            font-size: 15px;
-            letter-spacing: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #6b5d4e;
-        }
-        .btn-overview:hover {
-            background: #6b5d4e;
-            transform: scale(1.02);
-        }
-        .menu-item {
-            padding: 12px 25px;
-            cursor: pointer;
-            transition: 0.15s;
-            border-left: 4px solid transparent;
-            font-size: 15px;
-            letter-spacing: 1px;
-            color: #b7a692;
-        }
+        body { background: #f3efe8; font-family: 'Georgia', 'Songti SC', serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 280px; background: #2d241c; color: #ddd0c0; padding: 20px 0; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; z-index: 10; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #4a3f35; margin-bottom: 15px; }
+        .sidebar-header h2 { font-weight: 300; letter-spacing: 6px; color: #f5efe6; font-size: 20px; text-align: center; }
+        .sidebar-header .sub { font-size: 12px; color: #8a7b6b; text-align: center; letter-spacing: 2px; margin-top: 4px; }
+        .btn-overview { display: block; margin: 0 15px 15px; padding: 12px; background: #4a3f35; color: #f5efe6; text-align: center; border-radius: 60px; font-size: 15px; letter-spacing: 4px; cursor: pointer; transition: 0.2s; border: 1px solid #6b5d4e; }
+        .btn-overview:hover { background: #6b5d4e; transform: scale(1.02); }
+        .menu-item { padding: 12px 25px; cursor: pointer; transition: 0.15s; border-left: 4px solid transparent; font-size: 15px; letter-spacing: 1px; color: #b7a692; }
         .menu-item:hover { background: #3f3228; color: #fff; }
-        .menu-item.active {
-            background: #3f3228;
-            color: #f5efe6;
-            border-left-color: #b45f3b;
-            font-weight: 500;
-        }
-        .menu-item .badge {
-            float: right;
-            background: #4a3f35;
-            color: #b7a692;
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 30px;
-        }
-
-        /* ===== 右侧主内容 ===== */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 25px 35px;
-            overflow: hidden;
-            background: #fcf9f2;
-        }
-        /* 顶部操作栏 */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e8ddd0;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            flex-shrink: 0;
-        }
-        .top-bar .title-group {
-            display: flex;
-            align-items: baseline;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .top-bar h1 {
-            font-weight: 400;
-            color: #2d241c;
-            font-size: 26px;
-            letter-spacing: 3px;
-        }
-        .top-bar .tag {
-            background: #2d241c;
-            color: #f5efe6;
-            padding: 3px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
-        .action-btns {
-            display: flex;
-            gap: 12px;
-        }
-        .action-btns button {
-            background: transparent;
-            border: 1px solid #cbbeb0;
-            padding: 8px 20px;
-            border-radius: 60px;
-            font-size: 14px;
-            font-family: inherit;
-            color: #4a3f35;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #faf6f0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .action-btns button:hover {
-            background: #4a3f35;
-            color: #fcf9f2;
-            border-color: #4a3f35;
-        }
-        .action-btns .btn-share {
-            background: #8a5a3b;
-            color: #fff;
-            border-color: #8a5a3b;
-        }
-        .action-btns .btn-share:hover {
-            background: #6b452d;
-            border-color: #6b452d;
-        }
-
-        /* ===== 内容滚动区 (截图区域) ===== */
-        .scroll-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        #captureArea {
-            transition: all 0.2s;
-        }
-
-        /* ===== 总览架构图 (Dashboard) ===== */
-        .overview-panel {
-            display: none;
-            background: #f5efe6;
-            border-radius: 32px;
-            padding: 30px;
-            margin-bottom: 20px;
-            border: 1px solid #e2d6c8;
-        }
-        .overview-panel.active {
-            display: block;
-        }
-        .overview-panel h3 {
-            font-weight: 300;
-            letter-spacing: 6px;
-            text-align: center;
-            color: #4a3f35;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-        .mermaid-wrapper {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            overflow-x: auto;
-        }
-
-        /* ===== 学习模块 (分步流程) ===== */
-        .study-module {
-            display: block;
-        }
-        .study-module.hidden {
-            display: none;
-        }
-
-        .step-indicator {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        .step-dot {
-            padding: 8px 22px;
-            border-radius: 60px;
-            background: #e8ddd0;
-            color: #8a7b6b;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-        }
-        .step-dot.active {
-            background: #2d241c;
-            color: #f5efe6;
-            border-color: #2d241c;
-        }
-        .step-dot.done {
-            background: #b7a692;
-            color: #fff;
-        }
-
-        .step-content {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 30px;
-            border: 1px solid #e8ddd0;
-            min-height: 240px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-        .step-content .step-label {
-            font-size: 13px;
-            color: #b3a496;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-        }
-        .step-content .step-title {
-            font-size: 22px;
-            font-weight: 500;
-            color: #2d241c;
-            border-bottom: 1px dashed #e8ddd0;
-            padding-bottom: 12px;
-            margin-bottom: 15px;
-        }
-        .step-content .step-body {
-            font-size: 16px;
-            line-height: 1.9;
-            color: #4a3f35;
-        }
-        .step-content .step-body .quote-text {
-            font-size: 24px;
-            line-height: 1.6;
-            color: #8a5a3b;
-            font-weight: 500;
-            padding: 15px 20px;
-            background: #faf6f0;
-            border-radius: 16px;
-            margin: 10px 0;
-        }
-        .step-content .step-body .func-hint {
-            display: inline-block;
-            background: #2d241c;
-            color: #f5efe6;
-            padding: 2px 16px;
-            border-radius: 40px;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        /* 动态滑块区域 */
-        .slider-group {
-            margin-top: 20px;
-            background: #f5efe6;
-            padding: 15px 20px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .slider-group label {
-            font-size: 14px;
-            color: #4a3f35;
-            letter-spacing: 1px;
-        }
-        .slider-group input[type="range"] {
-            flex: 1;
-            min-width: 150px;
-            accent-color: #8a5a3b;
-            height: 6px;
-            border-radius: 10px;
-        }
-        .slider-group .val {
-            font-size: 15px;
-            font-weight: bold;
-            color: #8a5a3b;
-            min-width: 40px;
-        }
-
-        /* 画布 */
-        .canvas-wrapper {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 15px;
-            border: 1px solid #e2d6c8;
-            margin-top: 5px;
-        }
-        canvas {
-            width: 100%;
-            height: auto;
-            display: block;
-            background: #ffffff;
-            border-radius: 16px;
-        }
-
-        /* 底部导航(上一章/下一章) */
-        .nav-chapter {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .nav-chapter button {
-            padding: 12px 30px;
-            border-radius: 60px;
-            border: 1px solid #cbbeb0;
-            background: transparent;
-            font-family: inherit;
-            font-size: 15px;
-            color: #4a3f35;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #faf6f0;
-        }
-        .nav-chapter button:hover {
-            background: #2d241c;
-            color: #f5efe6;
-            border-color: #2d241c;
-        }
-
-        @media (max-width: 800px) {
-            body { flex-direction: column; height: auto; }
-            .sidebar { width: 100%; max-height: 250px; flex-direction: row; flex-wrap: wrap; padding: 10px; overflow-y: auto; }
-            .sidebar-header { display: none; }
-            .btn-overview { margin: 5px 10px; padding: 8px; font-size: 13px; }
-            .menu-item { padding: 6px 15px; font-size: 13px; border-left: none; border-bottom: 2px solid transparent; }
-            .main { padding: 15px; }
-            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
-        }
+        .menu-item.active { background: #3f3228; color: #f5efe6; border-left-color: #b45f3b; font-weight: 500; }
+        .main { flex: 1; display: flex; flex-direction: column; padding: 25px 35px; overflow: hidden; background: #fcf9f2; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8ddd0; padding-bottom: 12px; margin-bottom: 20px; flex-shrink: 0; }
+        .top-bar .title-group { display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap; }
+        .top-bar h1 { font-weight: 400; color: #2d241c; font-size: 26px; letter-spacing: 3px; }
+        .top-bar .tag { background: #2d241c; color: #f5efe6; padding: 3px 16px; border-radius: 40px; font-size: 13px; letter-spacing: 1px; }
+        .action-btns { display: flex; gap: 12px; }
+        .action-btns button { background: transparent; border: 1px solid #cbbeb0; padding: 8px 20px; border-radius: 60px; font-size: 14px; font-family: inherit; color: #4a3f35; cursor: pointer; transition: 0.2s; background: #faf6f0; display: flex; align-items: center; gap: 6px; }
+        .action-btns button:hover { background: #4a3f35; color: #fcf9f2; border-color: #4a3f35; }
+        .action-btns .btn-share { background: #8a5a3b; color: #fff; border-color: #8a5a3b; }
+        .action-btns .btn-share:hover { background: #6b452d; border-color: #6b452d; }
+        .scroll-content { flex: 1; overflow-y: auto; padding-right: 5px; }
+        #captureArea { transition: all 0.2s; }
+        .overview-panel { display: none; background: #f5efe6; border-radius: 32px; padding: 30px; margin-bottom: 20px; border: 1px solid #e2d6c8; }
+        .overview-panel.active { display: block; }
+        .overview-panel h3 { font-weight: 300; letter-spacing: 6px; text-align: center; color: #4a3f35; margin-bottom: 20px; font-size: 20px; }
+        .mermaid-wrapper { background: #ffffff; padding: 20px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow-x: auto; }
+        .study-module { display: block; }
+        .study-module.hidden { display: none; }
+        .step-indicator { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .step-dot { padding: 8px 22px; border-radius: 60px; background: #e8ddd0; color: #8a7b6b; font-size: 14px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .step-dot.active { background: #2d241c; color: #f5efe6; border-color: #2d241c; }
+        .step-dot.done { background: #b7a692; color: #fff; }
+        .step-dot.olympiad { background: #8a5a3b; color: #fff; } /* 奥数步骤特殊色 */
+        .step-dot.olympiad.active { background: #4a2a1a; border-color: #4a2a1a; }
+        .step-content { background: #ffffff; border-radius: 28px; padding: 30px; border: 1px solid #e8ddd0; min-height: 240px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .step-content .step-label { font-size: 13px; color: #b3a496; letter-spacing: 3px; margin-bottom: 8px; }
+        .step-content .step-title { font-size: 22px; font-weight: 500; color: #2d241c; border-bottom: 1px dashed #e8ddd0; padding-bottom: 12px; margin-bottom: 15px; }
+        .step-content .step-body { font-size: 16px; line-height: 1.9; color: #4a3f35; }
+        .step-content .step-body .quote-text { font-size: 24px; line-height: 1.6; color: #8a5a3b; font-weight: 500; padding: 15px 20px; background: #faf6f0; border-radius: 16px; margin: 10px 0; }
+        .step-content .step-body .func-hint { display: inline-block; background: #2d241c; color: #f5efe6; padding: 2px 16px; border-radius: 40px; font-size: 14px; margin-top: 10px; }
+        .step-content .step-body .math-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f5efe6; padding: 20px; border-radius: 16px; margin: 15px 0; }
+        .step-content .step-body .math-grid .item { background: #fff; padding: 8px 14px; border-radius: 12px; border-left: 4px solid #8a5a3b; }
+        .step-content .step-body .math-grid .item strong { color: #4a2a1a; }
+        .step-content .step-body .challenge-box { background: #e8ddd0; padding: 20px; border-radius: 16px; border: 2px dashed #8a5a3b; margin-top: 15px; }
+        .step-content .step-body .challenge-box strong { color: #8a5a3b; }
+        .slider-group { margin-top: 20px; background: #f5efe6; padding: 15px 20px; border-radius: 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .slider-group label { font-size: 14px; color: #4a3f35; letter-spacing: 1px; }
+        .slider-group input[type="range"] { flex: 1; min-width: 150px; accent-color: #8a5a3b; height: 6px; border-radius: 10px; }
+        .slider-group .val { font-size: 15px; font-weight: bold; color: #8a5a3b; min-width: 40px; }
+        .canvas-wrapper { background: #ffffff; border-radius: 24px; padding: 15px; border: 1px solid #e2d6c8; margin-top: 5px; }
+        canvas { width: 100%; height: auto; display: block; background: #ffffff; border-radius: 16px; }
+        .nav-chapter { display: flex; justify-content: space-between; margin-top: 20px; gap: 15px; flex-wrap: wrap; }
+        .nav-chapter button { padding: 12px 30px; border-radius: 60px; border: 1px solid #cbbeb0; background: transparent; font-family: inherit; font-size: 15px; color: #4a3f35; cursor: pointer; transition: 0.2s; background: #faf6f0; }
+        .nav-chapter button:hover { background: #2d241c; color: #f5efe6; border-color: #2d241c; }
+        @media (max-width: 800px) { body { flex-direction: column; height: auto; } .sidebar { width: 100%; max-height: 250px; flex-direction: row; flex-wrap: wrap; padding: 10px; overflow-y: auto; } .sidebar-header { display: none; } .btn-overview { margin: 5px 10px; padding: 8px; font-size: 13px; } .menu-item { padding: 6px 15px; font-size: 13px; border-left: none; border-bottom: 2px solid transparent; } .main { padding: 15px; } .top-bar { flex-direction: column; align-items: stretch; gap: 10px; } .step-content .step-body .math-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-
-<!-- ===== 左侧边栏 ===== -->
 <div class="sidebar">
-    <div class="sidebar-header">
-        <h2>☯ 道·模块</h2>
-        <div class="sub">81章 · 函数映射</div>
-    </div>
-    <!-- 总览入口 -->
+    <div class="sidebar-header"><h2>☯ 道·模块</h2><div class="sub">81章 · 函数映射</div></div>
     <div class="btn-overview" id="toggleOverviewBtn">📐 总览 · 学习架构</div>
-
-    <!-- 菜单列表 (这里放前4章做演示，后续你自行追加) -->
-    <div class="menu-item active" data-type="shouxin">🔄 01 · 收心 (收敛)</div>
-    <div class="menu-item" data-type="ziran">📈 02 · 自然 (线性)</div>
-    <div class="menu-item" data-type="jilei">🚀 03 · 积累 (指数)</div>
-    <div class="menu-item" data-type="weidao">🌿 04 · 为道 (对数)</div>
-    <!-- ===== 在这里继续添加 05 ~ 81 ===== -->
+    <div id="menuContainer"></div>
 </div>
-
-<!-- ===== 右侧主区域 ===== -->
 <div class="main">
-    <!-- 顶部操作栏 -->
     <div class="top-bar">
-        <div class="title-group">
-            <h1 id="pageTitle">收心 · 致虚极</h1>
-            <span class="tag" id="pageTypeTag">收敛函数</span>
-        </div>
-        <div class="action-btns">
-            <button id="shareBtn" class="btn-share">📷 分享截图</button>
-            <button id="resetZoomBtn">⟳ 重置视图</button>
-        </div>
+        <div class="title-group"><h1 id="pageTitle">收心 · 致虚极</h1><span class="tag" id="pageTypeTag">收敛函数</span></div>
+        <div class="action-btns"><button id="shareBtn" class="btn-share">📷 分享截图</button><button id="resetZoomBtn">⟳ 重置视图</button></div>
     </div>
-
-    <!-- 滚动内容 + 截图区域 -->
     <div class="scroll-content" id="scrollContent">
         <div id="captureArea">
-
-            <!-- 总览面板 (Mermaid 架构图) -->
             <div class="overview-panel" id="overviewPanel">
                 <h3>⚡ 道 · 函数学习架构</h3>
-                <div class="mermaid-wrapper">
-                    <div class="mermaid">
-                        graph LR
-                        %% 样式
+                <div class="mermaid-wrapper"><div class="mermaid">graph LR
                         classDef dao fill:#f5efe6,stroke:#8a5a3b,stroke-width:2px,color:#4a3f35;
-                        classDef func fill:#ffffff,stroke:#b7a692,stroke-width:2px,stroke-dasharray: 5 2,color:#2d241c;
+                        classDef func fill:#ffffff,stroke:#b7a692,stroke-width:2px,stroke-dasharray:5 2,color:#2d241c;
                         classDef step fill:#eaf1f2,stroke:#3b5e6b,stroke-width:2px,color:#1e2c33;
-
-                        subgraph 学习流程[分步研读流程]
-                            direction LR
-                            S1(1️⃣ 观象<br>看函数曲线):::step
-                            S2(2️⃣ 读经<br>品原文金句):::step
-                            S3(3️⃣ 演道<br>拖动滑块调参):::step
-                            S4(4️⃣ 悟理<br>生成截图分享):::step
-                            S1 --> S2 --> S3 --> S4
+                        subgraph 学习流程[分步研读流程] direction LR
+                        S1(1️⃣ 观象):::step --> S2(2️⃣ 读经):::step --> S3(3️⃣ 演道):::step --> S4(4️⃣ 悟理):::step --> S5(5️⃣ 奥数):::step
                         end
-
-                        subgraph 核心模块[道德经 · 函数图谱]
-                            direction TB
-                            A1(🌿 线性 y=x<br>道法自然):::func
-                            A2(🌀 收敛 y=1/x<br>致虚守静):::func
-                            A3(🚀 指数 y=eˣ<br>厚积薄发):::func
-                            A4(📉 对数 y=ln x<br>为道日损):::func
+                        subgraph 核心模块[道德经 · 函数图谱] direction TB
+                        A1(🌿 线性):::func; A2(🌀 收敛):::func; A3(🚀 指数):::func; A4(📉 对数):::func; A5(⛰️ U型):::func; A6(📈 S型):::func
                         end
-
                         学习流程 --> 核心模块
                         style 学习流程 fill:#f9f6f0,stroke:#ddd0c0
                         style 核心模块 fill:#f4f7f8,stroke:#c8dadd
-                    </div>
-                </div>
-                <div style="text-align:center; margin-top:15px; font-size:13px; color:#8a7b6b;">
-                    💡 点击左侧菜单切换章节 · 拖动滑块感受“道”的变化
-                </div>
+                </div></div>
+                <div style="text-align:center; margin-top:15px; font-size:13px; color:#8a7b6b;">💡 第5步「奥数·精进」带你从哲学走进高阶数学思维</div>
             </div>
-
-            <!-- 学习模块 (默认显示) -->
             <div class="study-module" id="studyModule">
-                <!-- 分步流程指示器 -->
                 <div class="step-indicator" id="stepIndicator">
                     <div class="step-dot active" data-step="1">1️⃣ 观象</div>
                     <div class="step-dot" data-step="2">2️⃣ 读经</div>
                     <div class="step-dot" data-step="3">3️⃣ 演道</div>
                     <div class="step-dot" data-step="4">4️⃣ 悟理</div>
+                    <!-- 第5步奥数按钮，由JS动态控制显示/隐藏 -->
+                    <div class="step-dot olympiad" data-step="5" id="olympiadStepBtn" style="display:none;">5️⃣ 数理</div>
                 </div>
-
-                <!-- 步骤内容容器 -->
-                <div class="step-content" id="stepContent">
-                    <!-- 由 JS 动态渲染 -->
-                </div>
-
-                <!-- 画布 -->
-                <div class="canvas-wrapper">
-                    <canvas id="functionCanvas" width="700" height="400"></canvas>
-                </div>
-
-                <!-- 动态滑块（参数调节） -->
-                <div class="slider-group">
-                    <label for="paramSlider">🌀 调节参数 (改变曲线形态) :</label>
-                    <input type="range" id="paramSlider" min="0.2" max="3.0" step="0.1" value="1.0">
-                    <span class="val" id="paramVal">1.0</span>
-                </div>
-
-                <!-- 上下章导航 -->
-                <div class="nav-chapter">
-                    <button id="prevChapterBtn">⬅ 上一章</button>
-                    <button id="nextChapterBtn">下一章 ➡</button>
-                </div>
+                <div class="step-content" id="stepContent"></div>
+                <div class="canvas-wrapper"><canvas id="functionCanvas" width="700" height="400"></canvas></div>
+                <div class="slider-group"><label for="paramSlider">🌀 调节参数 :</label><input type="range" id="paramSlider" min="0.2" max="3.0" step="0.1" value="1.0"><span class="val" id="paramVal">1.0</span></div>
+                <div class="nav-chapter"><button id="prevChapterBtn">⬅ 上一章</button><button id="nextChapterBtn">下一章 ➡</button></div>
             </div>
-
-        </div> <!-- end captureArea -->
+        </div>
     </div>
 </div>
-
 <script>
     // ============================================================
-    // 📦 数据仓库 (扩展)
+    //  🚀 核心引擎 (奥数增强版)
     // ============================================================
-    const MODULES = {
-        shouxin: {
-            title: '收心 · 致虚极',
-            tag: '收敛函数',
-            chapter: '《道德经 · 第十六章》',
-            quote: '致虚极，守静笃。万物并作，吾以观复。',
-            explain: '把向外攀援的思绪收回来，像 y=1/x 无限趋近原点，回归生命的本初宁静。',
-            func: 'converge',
-            defaultParam: 1.0
-        },
-        ziran: {
-            title: '自然 · 道法自然',
-            tag: '线性函数',
-            chapter: '《道德经 · 第二十五章》',
-            quote: '人法地，地法天，天法道，道法自然。',
-            explain: '线性 y=x，不偏不倚。你如何对待世界，世界便如何回馈于你，此乃天然之道。',
-            func: 'linear',
-            defaultParam: 1.0
-        },
-        jilei: {
-            title: '积累 · 厚积薄发',
-            tag: '指数函数',
-            chapter: '《道德经 · 第六十四章》',
-            quote: '合抱之木，生于毫末；九层之台，起于累土。',
-            explain: '指数 eˣ 的爆发力：前期微不可察，后期势如破竹。行善与进德，终将跨越临界点。',
-            func: 'exp',
-            defaultParam: 1.0
-        },
-        weidao: {
-            title: '为道 · 日损',
-            tag: '对数函数',
-            chapter: '《道德经 · 第四十八章》',
-            quote: '为学日益，为道日损，损之又损，以至于无为。',
-            explain: '对数 ln x 先快后慢。学问越做越多，大道越修越简，最终无限趋近那个“一”。',
-            func: 'log',
-            defaultParam: 1.0
-        }
-    };
+    const MODULES = window.DDJ_DATA || {};
+    const MENU_ORDER = Object.keys(MODULES);
 
-    // 菜单顺序
-    const MENU_ORDER = ['shouxin', 'ziran', 'jilei', 'weidao'];
-
-    // ============================================================
-    // 🎨 绘图引擎 (支持参数调节)
-    // ============================================================
     const canvas = document.getElementById('functionCanvas');
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     const pad = 50;
-    let currentParam = 1.0;
+    let currentParam = 1.0, currentKey = MENU_ORDER[0] || '';
+    let currentStep = 1;
 
     function toPixelX(x) { return pad + (x + 3.5) / 7 * (W - 2 * pad); }
     function toPixelY(y) { return pad + (3.5 - y) / 7 * (H - 2 * pad); }
 
     function drawGrid() {
-        ctx.strokeStyle = "#e8ddd0";
-        ctx.lineWidth = 0.5;
-        for (let i = -3; i <= 3; i++) {
-            if (i === 0) continue;
+        ctx.strokeStyle = "#e8ddd0"; ctx.lineWidth = 0.5;
+        for (let i = -3; i <= 3; i++) { if (i === 0) continue;
             ctx.beginPath(); ctx.moveTo(toPixelX(i), pad); ctx.lineTo(toPixelX(i), H - pad); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(pad, toPixelY(i)); ctx.lineTo(W - pad, toPixelY(i)); ctx.stroke();
         }
-        ctx.strokeStyle = "#4a3f35";
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#4a3f35"; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(pad, toPixelY(0)); ctx.lineTo(W - pad, toPixelY(0)); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(toPixelX(0), pad); ctx.lineTo(toPixelX(0), H - pad); ctx.stroke();
-        ctx.font = "14px serif";
-        ctx.fillStyle = "#4a3f35";
-        ctx.fillText("x", W - pad + 5, toPixelY(0) + 5);
-        ctx.fillText("y", toPixelX(0) + 5, pad - 5);
+        ctx.font = "14px serif"; ctx.fillStyle = "#4a3f35";
+        ctx.fillText("x", W - pad + 5, toPixelY(0) + 5); ctx.fillText("y", toPixelX(0) + 5, pad - 5);
         ctx.fillText("O", toPixelX(0) - 18, toPixelY(0) - 8);
     }
 
     function drawFunction(type, param) {
-        ctx.clearRect(0, 0, W, H);
-        drawGrid();
-        ctx.strokeStyle = "#b45f3b";
-        ctx.lineWidth = 3.5;
-        ctx.shadowColor = "rgba(180, 95, 59, 0.2)";
-        ctx.shadowBlur = 10;
+        ctx.clearRect(0, 0, W, H); drawGrid();
+        ctx.strokeStyle = "#b45f3b"; ctx.lineWidth = 3.5;
+        ctx.shadowColor = "rgba(180, 95, 59, 0.2)"; ctx.shadowBlur = 10;
         ctx.beginPath();
-
         let points = 300, startX = -3.2, endX = 3.2;
         let funcY = (x) => 0;
-
         switch(type) {
             case 'converge': funcY = (x) => (Math.abs(x) < 0.05) ? NaN : param / x; break;
             case 'linear': funcY = (x) => param * x; break;
             case 'exp': funcY = (x) => Math.exp(param * x); break;
             case 'log': funcY = (x) => (x > 0) ? param * Math.log(x) : NaN; break;
+            case 'quadratic': funcY = (x) => param * x * x; break;
+            case 'sigmoid': funcY = (x) => 2.5 / (1 + Math.exp(-param * x)) - 1.25; break;
+            case 'gaussian': funcY = (x) => 3 * Math.exp(-param * x * x); break;
             default: funcY = (x) => x;
         }
-
+        let started = false;
         for (let i = 0; i <= points; i++) {
-            let t = i / points;
-            let x = startX + t * (endX - startX);
-            let y = funcY(x);
+            let t = i / points, x = startX + t * (endX - startX), y = funcY(x);
             if (isNaN(y) || y > 5 || y < -5) continue;
             let px = toPixelX(x), py = toPixelY(y);
-            if (i === 0 || !isFinite(y)) ctx.moveTo(px, py);
+            if (!started || !isFinite(y)) { ctx.moveTo(px, py); started = true; }
             else ctx.lineTo(px, py);
         }
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = "#b45f3b";
-        ctx.beginPath();
-        ctx.arc(toPixelX(0), toPixelY(0), 5, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.fillStyle = "#4a3f35";
-        ctx.font = "12px serif";
-        ctx.fillText("原点 · 道枢", toPixelX(0) + 10, toPixelY(0) - 10);
+        ctx.stroke(); ctx.shadowBlur = 0;
+        ctx.fillStyle = "#b45f3b"; ctx.beginPath(); ctx.arc(toPixelX(0), toPixelY(0), 5, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = "#4a3f35"; ctx.font = "12px serif"; ctx.fillText("原点 · 道枢", toPixelX(0) + 10, toPixelY(0) - 10);
     }
 
-    // ============================================================
-    // 📖 分步学习渲染
-    // ============================================================
-    let currentStep = 1;
-    let currentKey = 'shouxin';
+    // --- 渲染菜单 ---
+    function renderMenu() {
+        const container = document.getElementById('menuContainer');
+        container.innerHTML = MENU_ORDER.map(key => {
+            const data = MODULES[key];
+            return `<div class="menu-item" data-type="${key}">${data.icon || '📖'} ${data.title}</div>`;
+        }).join('');
+        container.querySelectorAll('.menu-item').forEach(el => {
+            el.addEventListener('click', function() {
+                const type = this.dataset.type;
+                if (MODULES[type]) { document.getElementById('overviewPanel').classList.remove('active'); document.getElementById('studyModule').classList.remove('hidden'); loadModule(type, false); }
+            });
+        });
+    }
 
+    // --- 步骤渲染 (含奥数第5步) ---
     function renderStep(step, data) {
         const container = document.getElementById('stepContent');
+        const hasOlympiad = data.olympiad && typeof data.olympiad === 'object';
+        
+        // 控制奥数按钮显隐
+        const olympiadBtn = document.getElementById('olympiadStepBtn');
+        if (hasOlympiad) {
+            olympiadBtn.style.display = 'inline-block';
+        } else {
+            olympiadBtn.style.display = 'none';
+            // 如果当前在第5步但没有数据，强制回到第1步
+            if (step === 5) { step = 1; currentStep = 1; }
+        }
+
+        // 定义各步骤内容
         const steps = {
-            1: {
-                label: '第一步 · 观象',
-                title: '🧐 观天地之象',
-                body: `当前函数：<strong>${data.tag}</strong><br><br>
-                      请观察右侧曲线的整体形态。<br>
-                      它像什么？是直上直下，还是无限趋近？<br>
-                      <span style="color:#8a5a3b;">试着在脑海中联想这句经文的气韵。</span>
-                      <div class="func-hint">📐 曲线即道象</div>`
-            },
-            2: {
-                label: '第二步 · 读经',
-                title: '📜 品圣人真言',
-                body: `<div class="quote-text">「${data.quote}」</div>
-                      <div style="margin-top:12px; color:#5f5244;">—— ${data.chapter}</div>
-                      <div style="margin-top:15px; background:#faf6f0; padding:15px; border-radius:16px;">
-                        ${data.explain}
-                      </div>`
-            },
-            3: {
-                label: '第三步 · 演道',
-                title: '🎛️ 拖动滑块演道',
-                body: `下方滑块正在调节函数的 <strong>核心参数</strong>（${data.tag}）。<br>
-                      试试左右拖动，观察曲线如何变化——<br>
-                      <span style="color:#8a5a3b;">参数变了，曲线就变了；执念变了，心境就变了。</span>
-                      <div style="margin-top:12px; font-size:14px; color:#6b5d4e;">💡 当前参数值显示在滑块右侧</div>`
-            },
-            4: {
-                label: '第四步 · 悟理',
-                title: '✨ 悟道 · 分享此刻',
-                body: `你已经完成了「${data.title}」的完整学习闭环。<br><br>
-                      点击右上角的 <strong>“📷 分享截图”</strong> 按钮，即可将当前这一章的学习卡片保存为图片。<br>
-                      <span style="color:#8a5a3b;">把这份感悟分享给同修，也是弘道的一种方式。</span>
-                      <div style="margin-top:15px; padding:15px; background:#eaf1f2; border-radius:16px; text-align:center;">
-                        🎯 道在日常，日用而不知。
-                      </div>`
+            1: { label: '第一步 · 观象', title: '🧐 观天地之象', body: `当前函数：<strong>${data.tag}</strong><br><br>请观察右侧曲线的整体形态。<br>它像什么？是直上直下，还是无限趋近？<span style="color:#8a5a3b;">试着在脑海中联想这句经文的气韵。</span><div class="func-hint">📐 曲线即道象</div>` },
+            2: { label: '第二步 · 读经', title: '📜 品圣人真言', body: `<div class="quote-text">「${data.quote}」</div><div style="margin-top:12px; color:#5f5244;">—— ${data.chapter}</div><div style="margin-top:15px; background:#faf6f0; padding:15px; border-radius:16px;">${data.explain}</div>` },
+            3: { label: '第三步 · 演道', title: '🎛️ 拖动滑块演道', body: `下方滑块正在调节函数的 <strong>核心参数</strong>（${data.tag}）。<br>试着左右拖动，观察曲线如何变化——<span style="color:#8a5a3b;">参数变了，曲线就变了；执念变了，心境就变了。</span><div style="margin-top:12px; font-size:14px; color:#6b5d4e;">💡 当前参数值显示在滑块右侧</div>` },
+            4: { label: '第四步 · 悟理', title: '✨ 悟道 · 分享此刻', body: `你已经完成了「${data.title}」的完整学习闭环。<br><br>点击右上角的 <strong>“📷 分享截图”</strong> 按钮，即可将当前这一章的学习卡片保存为图片。<span style="color:#8a5a3b;">把这份感悟分享给同修，也是弘道的一种方式。</span><div style="margin-top:15px; padding:15px; background:#eaf1f2; border-radius:16px; text-align:center;">🎯 道在日常，日用而不知。</div>` },
+            5: { 
+                label: '第五步 · 数理精进', 
+                title: '🧮 奥数 · 函数精进', 
+                body: hasOlympiad ? `
+                    <p style="margin-bottom:15px;">从哲学意象中抽离，我们来看看这个函数的 <strong>硬核数学骨架</strong>：</p>
+                    <div class="math-grid">
+                        <div class="item"><strong>📐 定义域</strong><br>${data.olympiad.domain || '—'}</div>
+                        <div class="item"><strong>📏 值域</strong><br>${data.olympiad.range || '—'}</div>
+                        <div class="item"><strong>🔄 对称性</strong><br>${data.olympiad.symmetry || '—'}</div>
+                        <div class="item"><strong>📈 单调性</strong><br>${data.olympiad.monotonicity || '—'}</div>
+                        <div class="item" style="grid-column: span 2;"><strong>➰ 渐近线</strong><br>${data.olympiad.asymptote || '—'}</div>
+                    </div>
+                    <div class="challenge-box">
+                        <strong>🏆 奥数挑战题</strong><br>
+                        ${data.olympiad.challenge || '（本章暂无挑战题，欢迎你来命题！）'}
+                    </div>
+                    <div style="margin-top:15px; font-size:14px; color:#6b5d4e; background:#f5efe6; padding:10px; border-radius:12px; text-align:center;">
+                        💡 提示：结合曲线图像与代数性质，数形结合是破题关键。
+                    </div>
+                ` : '<p>本章暂未收录奥数精讲，欢迎贡献你的数学洞见！</p>'
             }
         };
+
         const s = steps[step] || steps[1];
-        container.innerHTML = `
-            <div class="step-label">${s.label}</div>
-            <div class="step-title">${s.title}</div>
-            <div class="step-body">${s.body}</div>
-        `;
+        container.innerHTML = `<div class="step-label">${s.label}</div><div class="step-title">${s.title}</div><div class="step-body">${s.body}</div>`;
+
         // 更新指示器
         document.querySelectorAll('.step-dot').forEach(d => {
             const num = parseInt(d.dataset.step);
@@ -658,162 +247,82 @@
         });
     }
 
-    // ============================================================
-    // 🔄 切换模块 & 更新UI
-    // ============================================================
+    // --- 加载模块 ---
     function loadModule(key, keepStep = true) {
-        const data = MODULES[key];
-        if (!data) return;
+        const data = MODULES[key]; if (!data) return;
         currentKey = key;
-
-        // 更新标题
         document.getElementById('pageTitle').innerText = data.title;
         document.getElementById('pageTypeTag').innerText = data.tag;
-
-        // 恢复默认参数
         currentParam = data.defaultParam || 1.0;
         document.getElementById('paramSlider').value = currentParam;
         document.getElementById('paramVal').innerText = currentParam.toFixed(1);
-
-        // 绘制
         drawFunction(data.func, currentParam);
-
-        // 如果当前在总览模式，切换回学习模式
         document.getElementById('overviewPanel').classList.remove('active');
         document.getElementById('studyModule').classList.remove('hidden');
-
-        // 重置步骤到第一步 (如果keepStep为false则重置)
-        if (!keepStep) {
+        if (!keepStep) currentStep = 1;
+        // 如果当前步骤是5但没有奥数数据，强行拉回1
+        if (currentStep === 5 && (!data.olympiad || typeof data.olympiad !== 'object')) {
             currentStep = 1;
-        } else {
-            // 确保步骤不超出
-            if (currentStep > 4) currentStep = 1;
         }
+        if (currentStep > 5) currentStep = 1;
         renderStep(currentStep, data);
-
-        // 菜单高亮
         document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
         document.querySelector(`.menu-item[data-type="${key}"]`)?.classList.add('active');
     }
 
-    // ============================================================
-    // 🖱️ 事件绑定
-    // ============================================================
-    // 左侧菜单
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const type = this.dataset.type;
-            if (MODULES[type]) {
-                // 关闭总览，进入学习
-                document.getElementById('overviewPanel').classList.remove('active');
-                document.getElementById('studyModule').classList.remove('hidden');
-                loadModule(type, false);
-            }
-        });
-    });
-
-    // 总览切换
+    // --- 事件绑定 ---
     document.getElementById('toggleOverviewBtn').addEventListener('click', function() {
-        const panel = document.getElementById('overviewPanel');
-        const study = document.getElementById('studyModule');
+        const panel = document.getElementById('overviewPanel'), study = document.getElementById('studyModule');
         panel.classList.toggle('active');
-        if (panel.classList.contains('active')) {
-            study.classList.add('hidden');
-            // 初始化 Mermaid (如果还没渲染)
-            mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
-        } else {
-            study.classList.remove('hidden');
-            // 刷新当前章节
-            loadModule(currentKey, true);
-        }
+        if (panel.classList.contains('active')) { study.classList.add('hidden'); mermaid.run({ nodes: document.querySelectorAll('.mermaid') }); }
+        else { study.classList.remove('hidden'); loadModule(currentKey, true); }
     });
 
-    // 分步指示器点击
     document.querySelectorAll('.step-dot').forEach(dot => {
         dot.addEventListener('click', function() {
             if (document.getElementById('overviewPanel').classList.contains('active')) return;
             const step = parseInt(this.dataset.step);
             const data = MODULES[currentKey];
-            if (data) {
-                currentStep = step;
-                renderStep(step, data);
+            if (!data) return;
+            // 如果点击第5步但没有奥数数据，阻止跳转
+            if (step === 5 && (!data.olympiad || typeof data.olympiad !== 'object')) {
+                alert('本章暂未收录奥数精讲，敬请期待！');
+                return;
             }
+            currentStep = step;
+            renderStep(step, data);
         });
     });
 
-    // 滑块事件
-    const slider = document.getElementById('paramSlider');
-    slider.addEventListener('input', function() {
-        const val = parseFloat(this.value);
-        document.getElementById('paramVal').innerText = val.toFixed(1);
-        currentParam = val;
-        const data = MODULES[currentKey];
-        if (data) {
-            drawFunction(data.func, val);
-            // 如果当前在第三步，提示交互完成
-            if (currentStep === 3) {
-                // 不做自动跳转，让用户自由体验
-            }
-        }
+    document.getElementById('paramSlider').addEventListener('input', function() {
+        const val = parseFloat(this.value); document.getElementById('paramVal').innerText = val.toFixed(1);
+        currentParam = val; const data = MODULES[currentKey]; if (data) drawFunction(data.func, val);
     });
 
-    // 上一章 / 下一章
     document.getElementById('prevChapterBtn').addEventListener('click', function() {
-        let idx = MENU_ORDER.indexOf(currentKey);
-        if (idx > 0) {
-            loadModule(MENU_ORDER[idx - 1], false);
-        } else {
-            alert('已是第一章');
-        }
+        let idx = MENU_ORDER.indexOf(currentKey); if (idx > 0) loadModule(MENU_ORDER[idx - 1], false); else alert('已是第一章');
     });
     document.getElementById('nextChapterBtn').addEventListener('click', function() {
-        let idx = MENU_ORDER.indexOf(currentKey);
-        if (idx < MENU_ORDER.length - 1) {
-            loadModule(MENU_ORDER[idx + 1], false);
-        } else {
-            alert('已是最后一章');
-        }
+        let idx = MENU_ORDER.indexOf(currentKey); if (idx < MENU_ORDER.length - 1) loadModule(MENU_ORDER[idx + 1], false); else alert('已是最后一章');
     });
+    document.getElementById('resetZoomBtn').addEventListener('click', function() { document.getElementById('scrollContent').scrollTop = 0; });
 
-    // 重置视图 (滚动到顶部)
-    document.getElementById('resetZoomBtn').addEventListener('click', function() {
-        document.getElementById('scrollContent').scrollTop = 0;
-    });
-
-    // ============================================================
-    // 📷 截图分享 (html2canvas)
-    // ============================================================
     document.getElementById('shareBtn').addEventListener('click', function() {
         const element = document.getElementById('captureArea');
-        // 临时给背景加白底防止截图透明
         element.style.background = '#fcf9f2';
-        html2canvas(element, {
-            scale: 1.8, // 高清
-            useCORS: true,
-            backgroundColor: '#fcf9f2',
-            logging: false,
-            windowHeight: element.scrollHeight,
-            windowWidth: element.scrollWidth
-        }).then(canvas => {
-            // 恢复背景（如果有样式差异）
+        html2canvas(element, { scale: 1.8, useCORS: true, backgroundColor: '#fcf9f2', logging: false, windowHeight: element.scrollHeight, windowWidth: element.scrollWidth }).then(canvas => {
             element.style.background = '';
-            // 生成下载
             const link = document.createElement('a');
             link.download = `道德经_${currentKey}_学习卡片.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-        }).catch(err => {
-            alert('截图生成失败，请重试或检查控制台错误。');
-            console.error(err);
-        });
+        }).catch(err => { alert('截图生成失败，请重试。'); console.error(err); });
     });
 
-    // ============================================================
-    // 🚀 初始化
-    // ============================================================
-    // 首次加载，默认选中第一个 (shouxin)
-    loadModule('shouxin', false);
+    // --- 初始化 ---
+    renderMenu();
+    if (MENU_ORDER.length > 0) loadModule(MENU_ORDER[0], false);
+    else document.getElementById('pageTitle').innerText = '请先在 ddj-data.js 中添加数据';
 </script>
-
 </body>
 </html>
