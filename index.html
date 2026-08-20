@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易道 · 函数思维导图</title>
+    <title>观象演道 · 数理格物 | 经典 × 科学</title>
+    <!-- 引入 Mermaid 用于首页展示学习流 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -14,144 +16,383 @@
             justify-content: center;
             align-items: center;
             padding: 30px;
-            background-image: radial-gradient(circle at 10% 20%, rgba(255, 248, 235, 0.6) 0%, #f3efe8 90%);
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 248, 235, 0.4) 0%, #f3efe8 90%);
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             width: 100%;
         }
+
+        /* ===== 头部区 ===== */
         .header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8ddd0;
+        }
+        .header .super-title {
+            font-size: 14px;
+            letter-spacing: 8px;
+            color: #8a7b6b;
+            background: #e8ddd0;
+            display: inline-block;
+            padding: 4px 30px;
+            border-radius: 60px;
+            margin-bottom: 16px;
+            font-weight: 300;
         }
         .header h1 {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 300;
-            letter-spacing: 18px;
+            letter-spacing: 20px;
             color: #2d241c;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
-        .header p {
-            color: #8a7b6b;
+        .header h1 span {
+            color: #8a5a3b;
+            font-weight: 400;
+        }
+        .header .sub {
             font-size: 18px;
+            color: #5f5244;
             letter-spacing: 6px;
-            border-top: 1px solid #ddd0c0;
-            display: inline-block;
-            padding-top: 15px;
+            font-style: italic;
         }
+        .header .badge-group {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .header .badge {
+            background: #2d241c;
+            color: #f5efe6;
+            padding: 6px 24px;
+            border-radius: 60px;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+        .header .badge.green {
+            background: #1e2c33;
+        }
+
+        /* ===== Mermaid 流程展示 ===== */
+        .flow-wrapper {
+            background: #fcf9f2;
+            border-radius: 40px;
+            padding: 30px 20px;
+            margin-bottom: 50px;
+            border: 1px solid #e2d6c8;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.03);
+        }
+        .flow-wrapper .mermaid {
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+        .flow-wrapper .flow-label {
+            text-align: center;
+            font-size: 14px;
+            color: #8a7b6b;
+            letter-spacing: 4px;
+            margin-top: 10px;
+        }
+
+        /* ===== 双卡片入口 ===== */
         .grid {
             display: flex;
             flex-wrap: wrap;
             gap: 40px;
             justify-content: center;
+            margin-top: 10px;
         }
         .card {
-            flex: 1 1 300px;
-            min-width: 260px;
+            flex: 1 1 380px;
+            min-width: 300px;
             background: #fcf9f2;
-            border-radius: 40px;
-            padding: 45px 35px 40px;
-            box-shadow: 0 20px 50px rgba(45, 36, 28, 0.08);
+            border-radius: 48px;
+            padding: 40px 35px 35px;
+            box-shadow: 0 20px 50px rgba(45, 36, 28, 0.06);
             border: 1px solid #e8ddd0;
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             color: #2d241c;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #b7a692;
+            opacity: 0.3;
+            transition: 0.3s;
         }
         .card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 30px 60px rgba(45, 36, 28, 0.15);
+            transform: translateY(-16px);
+            box-shadow: 0 40px 70px rgba(45, 36, 28, 0.12);
             border-color: #b7a692;
         }
+        .card:hover::before {
+            opacity: 1;
+            height: 8px;
+        }
+
+        /* 道篇颜色 */
+        .card-ddj::before { background: #8a5a3b; }
+        .card-ddj .icon { color: #8a5a3b; }
+        .card-ddj .tag { background: #8a5a3b; color: #fff; }
+        .card-ddj .sci-tag { background: #f5efe6; color: #8a5a3b; border: 1px solid #ddd0c0; }
+
+        /* 易篇颜色 */
+        .card-yj::before { background: #3b5e6b; }
+        .card-yj .icon { color: #3b5e6b; }
+        .card-yj .tag { background: #3b5e6b; color: #fff; }
+        .card-yj .sci-tag { background: #eaf1f2; color: #3b5e6b; border: 1px solid #c8dadd; }
+
         .card .icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 48px;
             line-height: 1;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+        .card:hover .icon {
+            transform: scale(1.1) rotate(-3deg);
         }
         .card h2 {
             font-size: 32px;
             font-weight: 400;
-            letter-spacing: 8px;
-            margin-bottom: 10px;
+            letter-spacing: 6px;
+            margin-bottom: 4px;
         }
-        .card .sub {
-            color: #8a7b6b;
+        .card .sub-title {
             font-size: 14px;
+            color: #8a7b6b;
             letter-spacing: 4px;
-            border-bottom: 1px dashed #ddd0c0;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            width: 80%;
+            border-bottom: 1px dashed #e8ddd0;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
         }
         .card .desc {
             font-size: 15px;
-            line-height: 1.8;
+            line-height: 1.9;
             color: #5f5244;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
+            flex: 1;
+        }
+        .card .desc strong {
+            color: #2d241c;
+            font-weight: 600;
+        }
+        .card .sci-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .card .sci-tag {
+            font-size: 12px;
+            padding: 4px 14px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+            background: #f5efe6;
+            color: #4a3f35;
+            border: 1px solid #ddd0c0;
+            transition: 0.2s;
+        }
+        .card:hover .sci-tag {
+            transform: translateY(-2px);
+        }
+        .card .footer-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            border-top: 1px solid #e8ddd0;
+            padding-top: 20px;
         }
         .card .tag {
-            background: #2d241c;
-            color: #f5efe6;
-            padding: 8px 24px;
+            padding: 8px 28px;
             border-radius: 60px;
-            font-size: 13px;
-            letter-spacing: 2px;
-            margin-top: auto;
+            font-size: 15px;
+            letter-spacing: 3px;
+            transition: 0.3s;
         }
-        /* 左边道德经卡片特殊色 */
-        .card-ddj .tag { background: #8a5a3b; }
-        .card-ddj:hover { border-color: #8a5a3b; }
-        /* 右边易经卡片特殊色 */
-        .card-yj .tag { background: #3b5e6b; }
-        .card-yj:hover { border-color: #3b5e6b; }
+        .card .arrow {
+            font-size: 22px;
+            opacity: 0.4;
+            transition: 0.3s;
+        }
+        .card:hover .arrow {
+            opacity: 1;
+            transform: translateX(8px);
+        }
 
-        @media (max-width: 700px) {
-            .header h1 { font-size: 32px; letter-spacing: 10px; }
-            .card { padding: 30px 20px; }
+        /* ===== 页脚 ===== */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #b3a496;
+            font-size: 13px;
+            letter-spacing: 3px;
+            border-top: 1px solid #e8ddd0;
+            padding-top: 30px;
+        }
+        .footer span {
+            color: #8a5a3b;
+        }
+
+        @media (max-width: 800px) {
+            .header h1 { font-size: 34px; letter-spacing: 10px; }
+            .header h1 span { display: block; }
+            .card { padding: 30px 25px; }
+            .flow-wrapper { padding: 15px 5px; }
+        }
+        @media (max-width: 500px) {
+            .header .badge-group { flex-direction: column; align-items: center; gap: 8px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>⚡ 观 · 象 · 演 · 道</h1>
-            <p>以数学函数 解 东方智慧</p>
-        </div>
 
-        <div class="grid">
-            <!-- 道德经入口 -->
-            <a href="daodejing.html" class="card card-ddj">
-                <div class="icon">☯</div>
-                <h2>道德经</h2>
-                <div class="sub">道 可 道 ， 非 常 道</div>
-                <div class="desc">
-                    81章模块化拆解<br>
-                    收敛 · 线性 · 指数 · 对数<br>
-                    <span style="color:#8a5a3b;">以函数形态 悟自然之道</span>
-                </div>
-                <div class="tag">进 入 道 篇 →</div>
-            </a>
+<div class="container">
 
-            <!-- 易经入口 -->
-            <a href="yijing.html" class="card card-yj">
-                <div class="icon">🔄</div>
-                <h2>周 易</h2>
-                <div class="sub">变 易 · 不 易 · 简 易</div>
-                <div class="desc">
-                    六十四卦周期演绎<br>
-                    正弦 · 余弦 · 波动 · 循环<br>
-                    <span style="color:#3b5e6b;">以波形规律 观阴阳消长</span>
-                </div>
-                <div class="tag">进 入 易 篇 →</div>
-            </a>
-        </div>
-
-        <div style="text-align:center; margin-top:60px; color:#b3a496; font-size:13px; letter-spacing:2px;">
-            ⚡ 点击卡片进入对应的思维函数图谱
+    <!-- ========== 头部 ========== -->
+    <div class="header">
+        <div class="super-title">⚡ 跨学科 · 格物实验室</div>
+        <h1>
+            观 <span>·</span> 象 <span>·</span> 演 <span>·</span> 道
+        </h1>
+        <div class="sub">以数学函数为眼 · 以现代科学为证</div>
+        <div class="badge-group">
+            <span class="badge">📐 函数图谱</span>
+            <span class="badge green">🔬 物理·化学·生物</span>
+            <span class="badge">🧠 认知·心理·系统</span>
         </div>
     </div>
+
+    <!-- ========== 学习流 Mermaid ========== -->
+    <div class="flow-wrapper">
+        <div class="mermaid">
+            graph LR
+                %% 样式
+                classDef step fill:#f5efe6,stroke:#8a5a3b,stroke-width:2px,color:#4a3f35;
+                classDef science fill:#eaf1f2,stroke:#3b5e6b,stroke-width:2px,color:#1e2c33;
+                classDef arrow fill:transparent,stroke:#b7a692,stroke-width:1px,color:#b7a692;
+
+                A(1️⃣ 观象<br><small>看函数曲线</small>):::step
+                B(2️⃣ 读经<br><small>品原文金句</small>):::step
+                C(3️⃣ 演道<br><small>滑块调参</small>):::step
+                D(4️⃣ 悟理<br><small>生成截图</small>):::step
+                E(5️⃣ 格物<br><small>⚛️ 科学实证</small>):::science
+
+                A --> B --> C --> D --> E
+
+                subgraph 核心灵魂[数理·格物跨学科矩阵]
+                    direction LR
+                    P[⚛️ 量子物理]:::science
+                    Q[🔥 热力学熵]:::science
+                    R[🧬 微生物学]:::science
+                    S[🧠 认知心理]:::science
+                    T[🌍 地质力学]:::science
+                    U[🧪 化学平衡]:::science
+                end
+
+                E -.-> P & Q & R & S & T & U
+
+                style 核心灵魂 fill:#f9f6f0,stroke:#ddd0c0,stroke-dasharray: 5 2
+        </div>
+        <div class="flow-label">📖 五步研读 · 从哲学思辨到科学实证</div>
+    </div>
+
+    <!-- ========== 双卡片入口 ========== -->
+    <div class="grid">
+
+        <!-- 道德经卡片 -->
+        <a href="daodejing.html" class="card card-ddj">
+            <div class="icon">☯</div>
+            <h2>道德经</h2>
+            <div class="sub-title">道 可 道 ， 非 常 道</div>
+            <div class="desc">
+                <strong>81 章 · 函数图谱</strong><br>
+                收敛 · 线性 · 指数 · 高斯 · U型<br>
+                每一章皆对应一种核心函数形态。
+            </div>
+            <div class="sci-stack">
+                <span class="sci-tag">⚛️ 量子概率</span>
+                <span class="sci-tag">🔥 熵增定律</span>
+                <span class="sci-tag">🏗️ 结构力学</span>
+                <span class="sci-tag">🧠 感知心理学</span>
+                <span class="sci-tag">🧬 细菌生长</span>
+            </div>
+            <div class="footer-btn">
+                <span class="tag">进 入 格 物 道 篇</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <!-- 周易卡片 -->
+        <a href="yijing.html" class="card card-yj">
+            <div class="icon">🔄</div>
+            <h2>周 易</h2>
+            <div class="sub-title">变 易 · 不 易 · 简 易</div>
+            <div class="desc">
+                <strong>64 卦 · 周期图谱</strong><br>
+                正弦 · 余弦 · 阻尼 · 锯齿 · 方波<br>
+                每一卦皆对应一种周期振荡模式。
+            </div>
+            <div class="sci-stack">
+                <span class="sci-tag">⚙️ 简谐运动</span>
+                <span class="sci-tag">🧪 化学平衡</span>
+                <span class="sci-tag">🌍 地质应力</span>
+                <span class="sci-tag">🧬 种群生态</span>
+                <span class="sci-tag">🧲 电磁感应</span>
+            </div>
+            <div class="footer-btn">
+                <span class="tag">进 入 格 物 易 篇</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- ========== 页脚 ========== -->
+    <div class="footer">
+        ⚡ 以数观道 · 以道御数 · 格物致知 · 知行合一 <br>
+        <span>「 用 21 世纪的科学语言，重新翻译 2500 年前的智慧 」</span>
+    </div>
+
+</div>
+
+<script>
+    // 初始化 Mermaid (让流程图动起来)
+    mermaid.initialize({
+        theme: 'base',
+        themeVariables: {
+            background: '#ffffff',
+            primaryColor: '#8a5a3b',
+            primaryTextColor: '#2d241c',
+            primaryBorderColor: '#b7a692',
+            lineColor: '#b7a692',
+            secondaryColor: '#eaf1f2',
+            tertiaryColor: '#f5efe6',
+            fontFamily: 'Georgia, serif'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis',
+            padding: 20
+        }
+    });
+    mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+</script>
+
 </body>
 </html>
