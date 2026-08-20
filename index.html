@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>易道 · 函数思维导图</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f3efe8;
+            font-family: 'Georgia', 'Songti SC', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 248, 235, 0.6) 0%, #f3efe8 90%);
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .header h1 {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 18px;
+            color: #2d241c;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #8a7b6b;
+            font-size: 18px;
+            letter-spacing: 6px;
+            border-top: 1px solid #ddd0c0;
+            display: inline-block;
+            padding-top: 15px;
+        }
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+        }
+        .card {
+            flex: 1 1 300px;
+            min-width: 260px;
+            background: #fcf9f2;
+            border-radius: 40px;
+            padding: 45px 35px 40px;
+            box-shadow: 0 20px 50px rgba(45, 36, 28, 0.08);
+            border: 1px solid #e8ddd0;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #2d241c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px rgba(45, 36, 28, 0.15);
+            border-color: #b7a692;
+        }
+        .card .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        .card h2 {
+            font-size: 32px;
+            font-weight: 400;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+        }
+        .card .sub {
+            color: #8a7b6b;
+            font-size: 14px;
+            letter-spacing: 4px;
+            border-bottom: 1px dashed #ddd0c0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            width: 80%;
+        }
+        .card .desc {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #5f5244;
+            margin-bottom: 25px;
+        }
+        .card .tag {
+            background: #2d241c;
+            color: #f5efe6;
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            margin-top: auto;
+        }
+        /* 左边道德经卡片特殊色 */
+        .card-ddj .tag { background: #8a5a3b; }
+        .card-ddj:hover { border-color: #8a5a3b; }
+        /* 右边易经卡片特殊色 */
+        .card-yj .tag { background: #3b5e6b; }
+        .card-yj:hover { border-color: #3b5e6b; }
+
+        @media (max-width: 700px) {
+            .header h1 { font-size: 32px; letter-spacing: 10px; }
+            .card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ 观 · 象 · 演 · 道</h1>
+            <p>以数学函数 解 东方智慧</p>
+        </div>
+
+        <div class="grid">
+            <!-- 道德经入口 -->
+            <a href="daodejing.html" class="card card-ddj">
+                <div class="icon">☯</div>
+                <h2>道德经</h2>
+                <div class="sub">道 可 道 ， 非 常 道</div>
+                <div class="desc">
+                    81章模块化拆解<br>
+                    收敛 · 线性 · 指数 · 对数<br>
+                    <span style="color:#8a5a3b;">以函数形态 悟自然之道</span>
+                </div>
+                <div class="tag">进 入 道 篇 →</div>
+            </a>
+
+            <!-- 易经入口 -->
+            <a href="yijing.html" class="card card-yj">
+                <div class="icon">🔄</div>
+                <h2>周 易</h2>
+                <div class="sub">变 易 · 不 易 · 简 易</div>
+                <div class="desc">
+                    六十四卦周期演绎<br>
+                    正弦 · 余弦 · 波动 · 循环<br>
+                    <span style="color:#3b5e6b;">以波形规律 观阴阳消长</span>
+                </div>
+                <div class="tag">进 入 易 篇 →</div>
+            </a>
+        </div>
+
+        <div style="text-align:center; margin-top:60px; color:#b3a496; font-size:13px; letter-spacing:2px;">
+            ⚡ 点击卡片进入对应的思维函数图谱
+        </div>
+    </div>
+</body>
+</html>
