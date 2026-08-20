@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>道德经 · 函数模块化框架</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #f3efe8; 
+            font-family: system-ui, 'Georgia', serif; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+        /* 左侧菜单 (index目录) */
+        .sidebar {
+            width: 260px;
+            background: #2d241c;
+            color: #ddd0c0;
+            padding: 30px 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 6px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #4a3f35;
+            margin-bottom: 20px;
+            color: #f5efe6;
+            font-size: 22px;
+        }
+        .menu-item {
+            padding: 14px 30px;
+            cursor: pointer;
+            transition: 0.15s;
+            border-left: 4px solid transparent;
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: #b7a692;
+        }
+        .menu-item:hover {
+            background: #3f3228;
+            color: #fff;
+        }
+        .menu-item.active {
+            background: #3f3228;
+            color: #f5efe6;
+            border-left-color: #b45f3b;
+            font-weight: 500;
+        }
+        /* 右侧主内容 (展示区) */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 50px;
+            overflow-y: auto;
+            background: #fcf9f2;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #e8ddd0;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .top-bar h1 {
+            font-weight: 300;
+            color: #4a3f35;
+            font-size: 28px;
+            letter-spacing: 4px;
+        }
+        .top-bar span {
+            color: #b3a496;
+            font-size: 14px;
+        }
+        .content-area {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .canvas-wrapper {
+            flex: 2;
+            min-width: 300px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2d6c8;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #ffffff;
+            border-radius: 16px;
+        }
+        .info-wrapper {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card-box {
+            background: #f5efe6;
+            border-radius: 24px;
+            padding: 24px;
+            border-left: 6px solid #b45f3b;
+        }
+        .card-box .chapter { font-size: 13px; color: #8a7b6b; letter-spacing: 2px; }
+        .card-box .quote { font-size: 22px; line-height: 1.6; margin: 10px 0; color: #2d241c; font-weight: 500; }
+        .card-box .explain { font-size: 15px; color: #5f5244; line-height: 1.8; border-top: 1px solid #ddd0c0; padding-top: 15px; }
+        .func-tag {
+            display: inline-block;
+            background: #2d241c;
+            color: #f5efe6;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            align-self: flex-start;
+        }
+        @media (max-width: 700px) {
+            body { flex-direction: column; height: auto; }
+            .sidebar { width: 100%; max-height: 200px; flex-direction: row; flex-wrap: wrap; padding: 10px; }
+            .sidebar h2 { display: none; }
+            .menu-item { padding: 8px 15px; font-size: 14px; border-left: none; border-bottom: 2px solid transparent; }
+            .main { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 左侧：Index 目录（放所有模块） ===== -->
+<div class="sidebar">
+    <h2>⚡ 道 · 模块</h2>
+    <!-- 你以后就在这里追加条目，格式：data-type="唯一标识" -->
+    <div class="menu-item active" data-type="shouxin">🔄 01 · 收心 (收敛)</div>
+    <div class="menu-item" data-type="ziran">📈 02 · 自然 (线性)</div>
+    <div class="menu-item" data-type="jilei">🚀 03 · 积累 (指数)</div>
+    <div class="menu-item" data-type="weidao">🌿 04 · 为道 (对数)</div>
+    <!-- ===== 在这里继续添加 05, 06 ... 一直到 81 ===== -->
+    <!-- <div class="menu-item" data-type="rouruo">🌊 05 · 柔弱 (正弦)</div> -->
+</div>
+
+<!-- ===== 右侧：展示区（只刷新这里） ===== -->
+<div class="main" id="mainContent">
+    <div class="top-bar">
+        <h1 id="pageTitle">收心 · 致虚极</h1>
+        <span id="pageTypeTag" class="func-tag">收敛函数</span>
+    </div>
+    <div class="content-area">
+        <div class="canvas-wrapper">
+            <canvas id="functionCanvas" width="600" height="400"></canvas>
+        </div>
+        <div class="info-wrapper">
+            <div class="card-box">
+                <div class="chapter" id="dispChapter">《道德经 · 第十六章》</div>
+                <div class="quote" id="dispQuote">致虚极，守静笃。</div>
+                <div class="explain" id="dispExplain">把发散的心念如 1/x 曲线般收敛回原点，回归虚静本心。</div>
+            </div>
+            <div style="font-size:13px; color:#b3a496; text-align:right; padding-right:10px;">
+                💡 点击左侧目录切换模块
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  📦 数据仓库：把《道德经》拆成模块，每个模块配一种函数
+    // ============================================================
+    const MODULES = {
+        shouxin: {
+            title: '收心 · 致虚极',
+            tag: '收敛函数',
+            chapter: '《道德经 · 第十六章》',
+            quote: '致虚极，守静笃。万物并作，吾以观复。',
+            explain: '把向外攀援的思绪收回来，像 y=1/x 无限趋近原点，回归生命的本初宁静。',
+            func: 'converge' // 对应绘图类型
+        },
+        ziran: {
+            title: '自然 · 道法自然',
+            tag: '线性函数',
+            chapter: '《道德经 · 第二十五章》',
+            quote: '人法地，地法天，天法道，道法自然。',
+            explain: '线性 y=x，不偏不倚。你如何对待世界，世界便如何回馈于你，此乃天然之道。',
+            func: 'linear'
+        },
+        jilei: {
+            title: '积累 · 厚积薄发',
+            tag: '指数函数',
+            chapter: '《道德经 · 第六十四章》',
+            quote: '合抱之木，生于毫末；九层之台，起于累土。',
+            explain: '指数 eˣ 的爆发力：前期微不可察，后期势如破竹。行善与进德，终将跨越临界点。',
+            func: 'exp'
+        },
+        weidao: {
+            title: '为道 · 日损',
+            tag: '对数函数',
+            chapter: '《道德经 · 第四十八章》',
+            quote: '为学日益，为道日损，损之又损，以至于无为。',
+            explain: '对数 ln x 先快后慢。学问越做越多，大道越修越简，最终无限趋近那个“一”。',
+            func: 'log'
+        }
+        // ===== 在这里继续添加模块，例如： =====
+        // rouro: {
+        //     title: '柔弱 · 胜刚强',
+        //     tag: '正弦波',
+        //     chapter: '《道德经 · 第七十八章》',
+        //     quote: '天下莫柔弱于水，而攻坚强者莫之能胜。',
+        //     explain: '正弦波起伏不定，柔弱却能克刚。像水一样顺势而为，绕指柔中有百炼钢。',
+        //     func: 'sine'
+        // }
+    };
+
+    // ============================================================
+    //  🎨 绘图引擎（只写一次，所有模块共用）
+    // ============================================================
+    const canvas = document.getElementById('functionCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = 50;
+
+    function toPixelX(x) { return pad + (x + 3) / 6 * (W - 2 * pad); }
+    function toPixelY(y) { return pad + (3 - y) / 6 * (H - 2 * pad); }
+
+    function drawGrid() {
+        ctx.strokeStyle = "#e8ddd0";
+        ctx.lineWidth = 0.5;
+        for (let i = -3; i <= 3; i++) {
+            if (i === 0) continue;
+            ctx.beginPath();
+            ctx.moveTo(toPixelX(i), pad);
+            ctx.lineTo(toPixelX(i), H - pad);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pad, toPixelY(i));
+            ctx.lineTo(W - pad, toPixelY(i));
+            ctx.stroke();
+        }
+        ctx.strokeStyle = "#4a3f35";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(pad, toPixelY(0));
+        ctx.lineTo(W - pad, toPixelY(0));
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(toPixelX(0), pad);
+        ctx.lineTo(toPixelX(0), H - pad);
+        ctx.stroke();
+        ctx.font = "14px serif";
+        ctx.fillStyle = "#4a3f35";
+        ctx.fillText("x", W - pad + 5, toPixelY(0) + 5);
+        ctx.fillText("y", toPixelX(0) + 5, pad - 5);
+        ctx.fillText("O", toPixelX(0) - 18, toPixelY(0) - 8);
+    }
+
+    function drawFunction(type) {
+        ctx.clearRect(0, 0, W, H);
+        drawGrid();
+        ctx.strokeStyle = "#b45f3b";
+        ctx.lineWidth = 3.5;
+        ctx.shadowColor = "rgba(180, 95, 59, 0.2)";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        let points = 200, startX = -2.8, endX = 2.8;
+
+        if (type === 'converge') {
+            for (let i = 0; i <= points; i++) {
+                let t = i / points, x = startX + t * (endX - startX);
+                if (Math.abs(x) < 0.05) continue;
+                let y = 1 / x;
+                if (y > 5 || y < -5) continue;
+                let px = toPixelX(x), py = toPixelY(y);
+                if (i === 0 || Math.abs(x) < 0.05) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            for (let i = 0; i <= points; i++) {
+                let t = i / points, x = -startX + t * (startX - (-startX));
+                if (Math.abs(x) < 0.05) continue;
+                let y = 1 / x;
+                if (y > 5 || y < -5) continue;
+                let px = toPixelX(x), py = toPixelY(y);
+                if (i === 0 || Math.abs(x) < 0.05) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+        } else if (type === 'linear') {
+            for (let i = 0; i <= points; i++) {
+                let t = i / points, x = startX + t * (endX - startX), y = x;
+                let px = toPixelX(x), py = toPixelY(y);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+        } else if (type === 'exp') {
+            for (let i = 0; i <= points; i++) {
+                let t = i / points, x = startX + t * (endX - startX), y = Math.exp(x);
+                if (y > 5) y = 5;
+                let px = toPixelX(x), py = toPixelY(y);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+        } else if (type === 'log') {
+            for (let i = 0; i <= points; i++) {
+                let t = i / points, x = 0.05 + t * (endX - 0.05), y = Math.log(x);
+                if (y < -5) y = -5;
+                let px = toPixelX(x), py = toPixelY(y);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#b45f3b";
+        ctx.beginPath();
+        ctx.arc(toPixelX(0), toPixelY(0), 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = "#4a3f35";
+        ctx.font = "12px serif";
+        ctx.fillText("原点 · 道枢", toPixelX(0) + 10, toPixelY(0) - 10);
+    }
+
+    // ============================================================
+    //  🔄 切换逻辑（点击左侧菜单 => 刷新右侧全部内容）
+    // ============================================================
+    function loadModule(moduleKey) {
+        const data = MODULES[moduleKey];
+        if (!data) return;
+
+        // 1. 更新标题和标签
+        document.getElementById('pageTitle').innerText = data.title;
+        document.getElementById('pageTypeTag').innerText = data.tag;
+
+        // 2. 更新文字解读
+        document.getElementById('dispChapter').innerText = data.chapter;
+        document.getElementById('dispQuote').innerText = data.quote;
+        document.getElementById('dispExplain').innerText = data.explain;
+
+        // 3. 重新画图
+        drawFunction(data.func);
+
+        // 4. 更新菜单高亮
+        document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+        document.querySelector(`.menu-item[data-type="${moduleKey}"]`)?.classList.add('active');
+    }
+
+    // ============================================================
+    //  🖱️ 绑定点击事件
+    // ============================================================
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const type = this.dataset.type;
+            if (MODULES[type]) {
+                loadModule(type);
+            }
+        });
+    });
+
+    // ============================================================
+    //  🚀 初始化：默认加载第一个模块 (shouxin)
+    // ============================================================
+    loadModule('shouxin');
+</script>
+
+</body>
+</html>
