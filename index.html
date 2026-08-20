@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>观象演道 · 数理格物 | 经典 × 科学</title>
-    <!-- 引入 Mermaid 用于首页展示学习流 -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,10 +22,10 @@
             width: 100%;
         }
 
-        /* ===== 头部区 ===== */
+        /* ===== 头部 ===== */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
             padding-bottom: 20px;
             border-bottom: 2px solid #e8ddd0;
         }
@@ -48,10 +47,7 @@
             color: #2d241c;
             margin-bottom: 12px;
         }
-        .header h1 span {
-            color: #8a5a3b;
-            font-weight: 400;
-        }
+        .header h1 span { color: #8a5a3b; font-weight: 400; }
         .header .sub {
             font-size: 18px;
             color: #5f5244;
@@ -73,24 +69,136 @@
             font-size: 13px;
             letter-spacing: 2px;
         }
-        .header .badge.green {
-            background: #1e2c33;
+        .header .badge.green { background: #1e2c33; }
+
+        /* ===== 金句滚动条 ===== */
+        .quote-ribbon {
+            background: #fcf9f2;
+            border-radius: 60px;
+            padding: 18px 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e2d6c8;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .quote-ribbon .quote-icon {
+            font-size: 22px;
+            opacity: 0.5;
+            margin-right: 12px;
+        }
+        .quote-ribbon .quote-text {
+            font-size: 18px;
+            color: #2d241c;
+            letter-spacing: 2px;
+            line-height: 1.6;
+            font-style: italic;
+            transition: opacity 0.6s ease;
+        }
+        .quote-ribbon .quote-text.fade {
+            opacity: 0;
+        }
+        .quote-ribbon .quote-source {
+            font-size: 14px;
+            color: #8a7b6b;
+            margin-top: 4px;
+            letter-spacing: 2px;
+        }
+        .quote-ribbon .quote-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #b7a692;
+            border-radius: 50%;
+            margin: 0 6px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* ===== Mermaid 流程展示 ===== */
+        /* ===== 今日格物推荐 ===== */
+        .daily-section {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .daily-card {
+            flex: 1;
+            min-width: 200px;
+            background: #fcf9f2;
+            border-radius: 28px;
+            padding: 22px 28px;
+            border: 1px solid #e8ddd0;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .daily-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+        }
+        .daily-card .daily-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: #b3a496;
+            margin-bottom: 6px;
+        }
+        .daily-card .daily-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #2d241c;
+            letter-spacing: 2px;
+        }
+        .daily-card .daily-chapter {
+            font-size: 14px;
+            color: #8a7b6b;
+            margin: 4px 0 8px;
+        }
+        .daily-card .daily-science {
+            font-size: 14px;
+            color: #5f5244;
+            background: #f5efe6;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        .daily-card .daily-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #8a5a3b;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            border-bottom: 1px dashed #ddd0c0;
+            transition: 0.2s;
+        }
+        .daily-card .daily-link:hover {
+            color: #4a2a1a;
+            border-bottom-color: #8a5a3b;
+        }
+        .daily-card.daily-yj .daily-science { background: #eaf1f2; color: #3b5e6b; }
+        .daily-card.daily-yj .daily-link { color: #3b5e6b; }
+        .daily-card.daily-yj .daily-link:hover { color: #1a3a44; }
+
+        /* ===== Mermaid 流程 ===== */
         .flow-wrapper {
             background: #fcf9f2;
             border-radius: 40px;
             padding: 30px 20px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             border: 1px solid #e2d6c8;
             box-shadow: 0 8px 30px rgba(0,0,0,0.03);
         }
-        .flow-wrapper .mermaid {
-            display: flex;
-            justify-content: center;
-            overflow-x: auto;
-        }
+        .flow-wrapper .mermaid { display: flex; justify-content: center; overflow-x: auto; }
         .flow-wrapper .flow-label {
             text-align: center;
             font-size: 14px;
@@ -99,13 +207,13 @@
             margin-top: 10px;
         }
 
-        /* ===== 双卡片入口 ===== */
+        /* ===== 双卡片 ===== */
         .grid {
             display: flex;
             flex-wrap: wrap;
             gap: 40px;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 0px;
         }
         .card {
             flex: 1 1 380px;
@@ -139,38 +247,19 @@
             box-shadow: 0 40px 70px rgba(45, 36, 28, 0.12);
             border-color: #b7a692;
         }
-        .card:hover::before {
-            opacity: 1;
-            height: 8px;
-        }
-
-        /* 道篇颜色 */
+        .card:hover::before { opacity: 1; height: 8px; }
         .card-ddj::before { background: #8a5a3b; }
         .card-ddj .icon { color: #8a5a3b; }
         .card-ddj .tag { background: #8a5a3b; color: #fff; }
         .card-ddj .sci-tag { background: #f5efe6; color: #8a5a3b; border: 1px solid #ddd0c0; }
-
-        /* 易篇颜色 */
         .card-yj::before { background: #3b5e6b; }
         .card-yj .icon { color: #3b5e6b; }
         .card-yj .tag { background: #3b5e6b; color: #fff; }
         .card-yj .sci-tag { background: #eaf1f2; color: #3b5e6b; border: 1px solid #c8dadd; }
 
-        .card .icon {
-            font-size: 48px;
-            line-height: 1;
-            margin-bottom: 12px;
-            transition: 0.3s;
-        }
-        .card:hover .icon {
-            transform: scale(1.1) rotate(-3deg);
-        }
-        .card h2 {
-            font-size: 32px;
-            font-weight: 400;
-            letter-spacing: 6px;
-            margin-bottom: 4px;
-        }
+        .card .icon { font-size: 48px; line-height: 1; margin-bottom: 12px; transition: 0.3s; }
+        .card:hover .icon { transform: scale(1.1) rotate(-3deg); }
+        .card h2 { font-size: 32px; font-weight: 400; letter-spacing: 6px; margin-bottom: 4px; }
         .card .sub-title {
             font-size: 14px;
             color: #8a7b6b;
@@ -186,10 +275,7 @@
             margin-bottom: 18px;
             flex: 1;
         }
-        .card .desc strong {
-            color: #2d241c;
-            font-weight: 600;
-        }
+        .card .desc strong { color: #2d241c; font-weight: 600; }
         .card .sci-stack {
             display: flex;
             flex-wrap: wrap;
@@ -206,9 +292,7 @@
             border: 1px solid #ddd0c0;
             transition: 0.2s;
         }
-        .card:hover .sci-tag {
-            transform: translateY(-2px);
-        }
+        .card:hover .sci-tag { transform: translateY(-2px); }
         .card .footer-btn {
             display: flex;
             justify-content: space-between;
@@ -217,26 +301,13 @@
             border-top: 1px solid #e8ddd0;
             padding-top: 20px;
         }
-        .card .tag {
-            padding: 8px 28px;
-            border-radius: 60px;
-            font-size: 15px;
-            letter-spacing: 3px;
-            transition: 0.3s;
-        }
-        .card .arrow {
-            font-size: 22px;
-            opacity: 0.4;
-            transition: 0.3s;
-        }
-        .card:hover .arrow {
-            opacity: 1;
-            transform: translateX(8px);
-        }
+        .card .tag { padding: 8px 28px; border-radius: 60px; font-size: 15px; letter-spacing: 3px; transition: 0.3s; }
+        .card .arrow { font-size: 22px; opacity: 0.4; transition: 0.3s; }
+        .card:hover .arrow { opacity: 1; transform: translateX(8px); }
 
         /* ===== 页脚 ===== */
         .footer {
-            margin-top: 60px;
+            margin-top: 50px;
             text-align: center;
             color: #b3a496;
             font-size: 13px;
@@ -244,15 +315,15 @@
             border-top: 1px solid #e8ddd0;
             padding-top: 30px;
         }
-        .footer span {
-            color: #8a5a3b;
-        }
+        .footer span { color: #8a5a3b; }
 
         @media (max-width: 800px) {
             .header h1 { font-size: 34px; letter-spacing: 10px; }
             .header h1 span { display: block; }
             .card { padding: 30px 25px; }
             .flow-wrapper { padding: 15px 5px; }
+            .quote-ribbon .quote-text { font-size: 15px; }
+            .daily-section { flex-direction: column; }
         }
         @media (max-width: 500px) {
             .header .badge-group { flex-direction: column; align-items: center; gap: 8px; }
@@ -263,12 +334,10 @@
 
 <div class="container">
 
-    <!-- ========== 头部 ========== -->
+    <!-- ===== 头部 ===== -->
     <div class="header">
         <div class="super-title">⚡ 跨学科 · 格物实验室</div>
-        <h1>
-            观 <span>·</span> 象 <span>·</span> 演 <span>·</span> 道
-        </h1>
+        <h1>观 <span>·</span> 象 <span>·</span> 演 <span>·</span> 道</h1>
         <div class="sub">以数学函数为眼 · 以现代科学为证</div>
         <div class="badge-group">
             <span class="badge">📐 函数图谱</span>
@@ -277,14 +346,31 @@
         </div>
     </div>
 
-    <!-- ========== 学习流 Mermaid ========== -->
+    <!-- ===== 金句滚动条 ===== -->
+    <div class="quote-ribbon" id="quoteRibbon">
+        <div>
+            <span class="quote-icon">❝</span>
+            <span class="quote-text" id="quoteText">道可道，非常道。名可名，非常名。</span>
+        </div>
+        <div class="quote-source" id="quoteSource">——《道德经》第一章 · 量子概率波</div>
+        <div style="margin-top:6px;">
+            <span class="quote-dot"></span>
+            <span class="quote-dot" style="animation-delay:0.4s;"></span>
+            <span class="quote-dot" style="animation-delay:0.8s;"></span>
+        </div>
+    </div>
+
+    <!-- ===== 今日格物推荐 ===== -->
+    <div class="daily-section" id="dailySection">
+        <!-- 由 JS 动态渲染 -->
+    </div>
+
+    <!-- ===== Mermaid 流程 ===== -->
     <div class="flow-wrapper">
         <div class="mermaid">
             graph LR
-                %% 样式
                 classDef step fill:#f5efe6,stroke:#8a5a3b,stroke-width:2px,color:#4a3f35;
                 classDef science fill:#eaf1f2,stroke:#3b5e6b,stroke-width:2px,color:#1e2c33;
-                classDef arrow fill:transparent,stroke:#b7a692,stroke-width:1px,color:#b7a692;
 
                 A(1️⃣ 观象<br><small>看函数曲线</small>):::step
                 B(2️⃣ 读经<br><small>品原文金句</small>):::step
@@ -311,10 +397,8 @@
         <div class="flow-label">📖 五步研读 · 从哲学思辨到科学实证</div>
     </div>
 
-    <!-- ========== 双卡片入口 ========== -->
+    <!-- ===== 双卡片 ===== -->
     <div class="grid">
-
-        <!-- 道德经卡片 -->
         <a href="daodejing.html" class="card card-ddj">
             <div class="icon">☯</div>
             <h2>道德经</h2>
@@ -337,7 +421,6 @@
             </div>
         </a>
 
-        <!-- 周易卡片 -->
         <a href="yijing.html" class="card card-yj">
             <div class="icon">🔄</div>
             <h2>周 易</h2>
@@ -359,10 +442,9 @@
                 <span class="arrow">→</span>
             </div>
         </a>
-
     </div>
 
-    <!-- ========== 页脚 ========== -->
+    <!-- ===== 页脚 ===== -->
     <div class="footer">
         ⚡ 以数观道 · 以道御数 · 格物致知 · 知行合一 <br>
         <span>「 用 21 世纪的科学语言，重新翻译 2500 年前的智慧 」</span>
@@ -371,7 +453,120 @@
 </div>
 
 <script>
-    // 初始化 Mermaid (让流程图动起来)
+    // ============================================================
+    //  🧠 金句滚动库 (10条精选，融合经典与科学)
+    // ============================================================
+    const QUOTES = [
+        { text: '道可道，非常道。名可名，非常名。', source: '《道德经》第一章 · 量子概率波' },
+        { text: '人法地，地法天，天法道，道法自然。', source: '《道德经》第二十五章 · 牛顿惯性定律' },
+        { text: '合抱之木，生于毫末；九层之台，起于累土。', source: '《道德经》第六十四章 · 指数增长' },
+        { text: '致虚极，守静笃。万物并作，吾以观复。', source: '《道德经》第十六章 · 熵增与负熵' },
+        { text: '三十辐共一毂，当其无，有车之用。', source: '《道德经》第十一章 · 结构力学' },
+        { text: '为学日益，为道日损，损之又损，以至于无为。', source: '《道德经》第四十八章 · 感知对数定律' },
+        { text: '天行健，君子以自强不息。', source: '《周易》乾卦 · 简谐运动' },
+        { text: '地势坤，君子以厚德载物。', source: '《周易》坤卦 · 地质应力' },
+        { text: '天地交，泰。后以财成天地之道。', source: '《周易》泰卦 · 化学平衡' },
+        { text: '既济，亨小，利贞。初吉，终乱。', source: '《周易》既济卦 · 种群生态' }
+    ];
+
+    let quoteIndex = 0;
+    const quoteText = document.getElementById('quoteText');
+    const quoteSource = document.getElementById('quoteSource');
+
+    function rotateQuote() {
+        const q = QUOTES[quoteIndex];
+        quoteText.classList.add('fade');
+        setTimeout(() => {
+            quoteText.textContent = q.text;
+            quoteSource.textContent = '—— ' + q.source;
+            quoteText.classList.remove('fade');
+        }, 400);
+        quoteIndex = (quoteIndex + 1) % QUOTES.length;
+    }
+
+    // 每 6 秒切换
+    setInterval(rotateQuote, 6000);
+
+    // ============================================================
+    //  📅 今日格物推荐 (基于日期种子，同一天不变)
+    // ============================================================
+    // 模拟两个经典的数据快照 (实际数据会从 ddj-data.js / yj-data.js 读取)
+    // 这里为了演示，硬编码几个示例；日后可替换为真实数据读取
+    const DAILY_DDJ = [
+        { title: '道可道 · 非常道', chapter: '第一章', science: '⚛️ 量子概率波' },
+        { title: '自然 · 道法自然', chapter: '第二十五章', science: '⚙️ 牛顿惯性定律' },
+        { title: '积累 · 厚积薄发', chapter: '第六十四章', science: '🧬 指数增长' },
+        { title: '收心 · 致虚极', chapter: '第十六章', science: '🔥 熵增定律' },
+        { title: '无之用 · 有之以为利', chapter: '第十一章', science: '🏗️ 结构力学' },
+        { title: '为道 · 日损', chapter: '第四十八章', science: '🧠 感知对数定律' }
+    ];
+
+    const DAILY_YJ = [
+        { title: '乾 · 元亨利贞', chapter: '乾卦', science: '⚙️ 简谐运动' },
+        { title: '坤 · 厚德载物', chapter: '坤卦', science: '🌍 地质应力' },
+        { title: '泰 · 小往大来', chapter: '泰卦', science: '🧪 化学平衡' },
+        { title: '既济 · 事成', chapter: '既济卦', science: '🧬 种群生态' }
+    ];
+
+    function getDailySeed() {
+        const now = new Date();
+        return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    }
+
+    function pickByDate(arr, seed) {
+        if (!arr || arr.length === 0) return null;
+        const idx = seed % arr.length;
+        return arr[idx];
+    }
+
+    function renderDaily() {
+        const seed = getDailySeed();
+        const ddjPick = pickByDate(DAILY_DDJ, seed);
+        const yjPick = pickByDate(DAILY_YJ, seed + 7); // 偏移7，让两篇不撞车
+
+        const container = document.getElementById('dailySection');
+        let html = '';
+
+        if (ddjPick) {
+            html += `
+                <div class="daily-card">
+                    <div class="daily-label">📜 今日 · 道德经</div>
+                    <div class="daily-title">${ddjPick.title}</div>
+                    <div class="daily-chapter">${ddjPick.chapter}</div>
+                    <div class="daily-science">${ddjPick.science}</div>
+                    <a href="daodejing.html" class="daily-link">进入研读 →</a>
+                </div>
+            `;
+        }
+
+        if (yjPick) {
+            html += `
+                <div class="daily-card daily-yj">
+                    <div class="daily-label">🔄 今日 · 周易</div>
+                    <div class="daily-title">${yjPick.title}</div>
+                    <div class="daily-chapter">${yjPick.chapter}</div>
+                    <div class="daily-science">${yjPick.science}</div>
+                    <a href="yijing.html" class="daily-link">进入研读 →</a>
+                </div>
+            `;
+        }
+
+        // 如果某个没数据，给个占位
+        if (!html) {
+            html = `
+                <div class="daily-card" style="flex:1; text-align:center; color:#b3a496;">
+                    <div class="daily-label">📖 今日格物</div>
+                    <div style="padding:20px 0;">数据加载中……</div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+    }
+
+    // ============================================================
+    //  🚀 初始化 Mermaid
+    // ============================================================
     mermaid.initialize({
         theme: 'base',
         themeVariables: {
@@ -392,6 +587,11 @@
         }
     });
     mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+
+    // ============================================================
+    //  📅 渲染今日推荐
+    // ============================================================
+    renderDaily();
 </script>
 
 </body>
