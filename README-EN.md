@@ -1,12 +1,11 @@
-[![EN](https://img.shields.io/badge/English-README--EN-blue?style=for-the-badge)](README-EN.md)
-[![CN](https://img.shields.io/badge/中文-README-brightgreen?style=for-the-badge)](README.md)
-
 <div align="center">
 
 # ⚡ Observe · Symbolize · Enact · Dao
 
 ### The Dao De Jing × I Ching × Mathematical Functions × Modern Scientific Experiments
 
+[![EN](https://img.shields.io/badge/English-README--EN-blue?style=for-the-badge)](README-EN.md)
+[![CN](https://img.shields.io/badge/中文-README-brightgreen?style=for-the-badge)](README.md)
 [![Status](https://img.shields.io/badge/Status-Complete_81_Chapters_+_64_Hexagrams-8a5a3b?style=for-the-badge&logo=github)](https://github.com/)
 [![Tech](https://img.shields.io/badge/Tech-Stack_Vanilla_HTML_Canvas-2d241c?style=for-the-badge&logo=html5)](https://github.com/)
 [![Scope](https://img.shields.io/badge/Science_Metaphors-145+-3b5e6b?style=for-the-badge&logo=databricks)](https://github.com/)
