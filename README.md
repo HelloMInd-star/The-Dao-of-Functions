@@ -1,10 +1,11 @@
-
-```markdown
 <div align="center">
 
 # ⚡ 观 · 象 · 演 · 道
 
 ### 《道德经》×《周易》× 数学函数 × 现代科学实验
+
+[![EN](https://img.shields.io/badge/English-README--EN-blue?style=for-the-badge)](README-EN.md)
+[![CN](https://img.shields.io/badge/中文-README-brightgreen?style=for-the-badge)](README.md)
 
 [![Status](https://img.shields.io/badge/状态-完整数据_81章+64卦-8a5a3b?style=for-the-badge&logo=github)](https://github.com/)
 [![Tech](https://img.shields.io/badge/技术栈-原生_HTML_Canvas-2d241c?style=for-the-badge&logo=html5)](https://github.com/)
