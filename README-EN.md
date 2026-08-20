@@ -1,3 +1,6 @@
+[![EN](https://img.shields.io/badge/English-README--EN-blue?style=for-the-badge)](README-EN.md)
+[![CN](https://img.shields.io/badge/中文-README-brightgreen?style=for-the-badge)](README.md)
+
 <div align="center">
 
 # ⚡ Observe · Symbolize · Enact · Dao
