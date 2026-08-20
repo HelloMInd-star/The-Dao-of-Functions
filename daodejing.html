@@ -76,7 +76,7 @@
 </div>
 <div class="main">
     <div class="top-bar">
-        <div class="title-group"><h1 id="pageTitle">道可道 · 非常道</h1><span class="tag" id="pageTypeTag">量子概率波</span></div>
+        <div class="title-group"><h1 id="pageTitle">道可道·非常道</h1><span class="tag" id="pageTypeTag">量子概率波</span></div>
         <div class="action-btns"><button id="shareBtn" class="btn-share">📷 分享截图</button><button id="resetZoomBtn">⟳ 重置视图</button></div>
     </div>
     <div class="scroll-content" id="scrollContent">
@@ -121,7 +121,7 @@
 </div>
 <script>
     // ============================================================
-    //  🚀 核心引擎 (道德经·格物版)
+    //  🚀 核心引擎 (道德经·格物版 · 全能绘图)
     // ============================================================
     const MODULES = window.DDJ_DATA || {};
     const MENU_ORDER = Object.keys(MODULES);
@@ -150,23 +150,38 @@
         ctx.fillText("O", toPixelX(0) - 18, toPixelY(0) - 8);
     }
 
+    // ========== 🚀 全能绘图引擎（支持所有类型） ==========
     function drawFunction(type, param) {
-        ctx.clearRect(0, 0, W, H); drawGrid();
-        ctx.strokeStyle = "#b45f3b"; ctx.lineWidth = 3.5;
-        ctx.shadowColor = "rgba(180, 95, 59, 0.2)"; ctx.shadowBlur = 10;
+        ctx.clearRect(0, 0, W, H);
+        drawGrid();
+        ctx.strokeStyle = "#b45f3b";
+        ctx.lineWidth = 3.5;
+        ctx.shadowColor = "rgba(180, 95, 59, 0.2)";
+        ctx.shadowBlur = 10;
         ctx.beginPath();
+
         let points = 300, startX = -3.2, endX = 3.2;
         let funcY = (x) => 0;
+
         switch(type) {
-            case 'converge': funcY = (x) => (Math.abs(x) < 0.05) ? NaN : param / x; break;
-            case 'linear': funcY = (x) => param * x; break;
-            case 'exp': funcY = (x) => Math.exp(param * x); break;
-            case 'log': funcY = (x) => (x > 0) ? param * Math.log(x) : NaN; break;
-            case 'quadratic': funcY = (x) => param * x * x; break;
-            case 'sigmoid': funcY = (x) => 2.5 / (1 + Math.exp(-param * x)) - 1.25; break;
-            case 'gaussian': funcY = (x) => 3 * Math.exp(-param * x * x); break;
-            default: funcY = (x) => x;
+            // 道篇原生函数
+            case 'converge':   funcY = (x) => (Math.abs(x) < 0.05) ? NaN : param / x; break;
+            case 'linear':     funcY = (x) => param * x; break;
+            case 'exp':        funcY = (x) => Math.exp(param * x); break;
+            case 'log':        funcY = (x) => (x > 0) ? param * Math.log(x) : NaN; break;
+            case 'quadratic':  funcY = (x) => param * x * x; break;
+            case 'sigmoid':    funcY = (x) => 2.5 / (1 + Math.exp(-param * x)) - 1.25; break;
+            case 'gaussian':   funcY = (x) => 3 * Math.exp(-param * x * x); break;
+            // 易篇波形（兼容）
+            case 'sine':       funcY = (x) => Math.sin(param * x * 1.8); break;
+            case 'cosine':     funcY = (x) => Math.cos(param * x * 1.8); break;
+            case 'damped':     funcY = (x) => Math.sin(x * 2.5) * Math.exp(-param * Math.abs(x)); break;
+            case 'sawtooth':   funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (v - 0.5) * 2.5; }; break;
+            case 'square':     funcY = (x) => Math.sign(Math.sin(param * x * 2)) * 2.2; break;
+            case 'triangle':   funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (Math.abs(v - 0.5) - 0.25) * 5; }; break;
+            default:           funcY = (x) => x;
         }
+
         let started = false;
         for (let i = 0; i <= points; i++) {
             let t = i / points, x = startX + t * (endX - startX), y = funcY(x);
