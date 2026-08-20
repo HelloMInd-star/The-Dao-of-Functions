@@ -2,198 +2,123 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>道德经 · 数理格物（自定义视口引擎）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>道德经 · 数理格物（81章完整内嵌）</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a080c; font-family: 'Georgia', 'Songti SC', serif; color: #b8a08a; overflow: hidden; height: 100vh; width: 100vw; transition: background 0.3s; }
-        .mode-toggle { position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: rgba(20, 14, 18, 0.7); backdrop-filter: blur(8px); border: 1px solid #3a2a30; border-radius: 40px; padding: 8px 16px; color: #b89a7a; font-size: 13px; cursor: pointer; transition: 0.3s; letter-spacing: 1px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px; }
-        .mode-toggle:hover { background: rgba(40, 28, 34, 0.9); border-color: #b8860b; }
-        .mode-toggle .icon { font-size: 18px; }
-        .layout-desktop { display: flex; height: 100vh; width: 100vw; background: #0e0b10; }
-        .layout-desktop .sidebar { width: 280px; background: #120e14; border-right: 1px solid #1e1620; padding: 20px 0; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
-        .layout-desktop .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #1e1620; margin-bottom: 15px; }
-        .layout-desktop .sidebar-header h2 { font-weight: 300; letter-spacing: 6px; color: #d4c0a8; font-size: 20px; text-align: center; }
-        .layout-desktop .sidebar-header .sub { font-size: 12px; color: #5a4a3a; text-align: center; letter-spacing: 2px; margin-top: 4px; }
-        .layout-desktop .btn-overview { display: block; margin: 0 15px 15px; padding: 12px; background: #1e1620; color: #b89a7a; text-align: center; border-radius: 60px; font-size: 15px; letter-spacing: 4px; cursor: pointer; transition: 0.2s; border: 1px solid #2a1f28; }
-        .layout-desktop .btn-overview:hover { background: #2a1f28; border-color: #b8860b; }
-        .layout-desktop .menu-item { padding: 12px 25px; cursor: pointer; transition: 0.15s; border-left: 4px solid transparent; font-size: 15px; letter-spacing: 1px; color: #7a6a5a; }
-        .layout-desktop .menu-item:hover { background: #1e1620; color: #d4c0a8; }
-        .layout-desktop .menu-item.active { background: #1e1620; color: #e8d4b8; border-left-color: #b8860b; }
-        .layout-desktop .main { flex: 1; display: flex; flex-direction: column; padding: 20px 30px; overflow: hidden; background: #0e0b10; }
-        .layout-desktop .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1620; padding-bottom: 12px; margin-bottom: 16px; flex-shrink: 0; }
-        .layout-desktop .top-bar .title-group { display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap; }
-        .layout-desktop .top-bar h1 { font-weight: 400; color: #d4c0a8; font-size: 22px; letter-spacing: 3px; }
-        .layout-desktop .top-bar .tag { background: #1e1620; color: #b89a7a; padding: 3px 16px; border-radius: 40px; font-size: 13px; letter-spacing: 1px; }
-        .layout-desktop .action-btns { display: flex; gap: 12px; }
-        .layout-desktop .action-btns button { background: transparent; border: 1px solid #2a1f28; padding: 8px 20px; border-radius: 60px; font-size: 14px; font-family: inherit; color: #b89a7a; cursor: pointer; transition: 0.2s; background: #120e14; }
-        .layout-desktop .action-btns button:hover { background: #1e1620; border-color: #b8860b; }
-        .layout-desktop .action-btns .btn-share { background: #2a1f28; color: #e8d4b8; border-color: #3a2a30; }
-        .layout-desktop .action-btns .btn-share:hover { background: #3a2a30; border-color: #b8860b; }
-        .layout-desktop .scroll-content { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .layout-desktop #captureArea { transition: all 0.2s; }
-        .layout-mobile { display: none; height: 100vh; width: 100vw; background: #0e0b10; flex-direction: column; }
-        .layout-mobile .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #120e14; border-bottom: 1px solid #1e1620; flex-shrink: 0; min-height: 56px; }
-        .layout-mobile .mobile-header h1 { font-size: 18px; font-weight: 400; color: #d4c0a8; letter-spacing: 2px; flex: 1; text-align: center; }
-        .layout-mobile .menu-hamburger { font-size: 24px; cursor: pointer; color: #b89a7a; padding: 4px 12px; background: none; border: none; }
-        .layout-mobile .menu-hamburger:hover { color: #e8d4b8; }
-        .mobile-drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #120e14; border-right: 1px solid #1e1620; padding: 20px 0; overflow-y: auto; transition: left 0.3s ease; z-index: 1000; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
-        .mobile-drawer.open { left: 0; }
-        .mobile-drawer .drawer-header { padding: 0 20px 20px; border-bottom: 1px solid #1e1620; margin-bottom: 15px; }
-        .mobile-drawer .drawer-header h2 { font-weight: 300; letter-spacing: 6px; color: #d4c0a8; font-size: 18px; text-align: center; }
-        .mobile-drawer .drawer-header .sub { font-size: 12px; color: #5a4a3a; text-align: center; letter-spacing: 2px; margin-top: 4px; }
-        .mobile-drawer .menu-item { padding: 12px 25px; cursor: pointer; transition: 0.15s; border-left: 4px solid transparent; font-size: 15px; letter-spacing: 1px; color: #7a6a5a; }
-        .mobile-drawer .menu-item:hover { background: #1e1620; color: #d4c0a8; }
-        .mobile-drawer .menu-item.active { background: #1e1620; color: #e8d4b8; border-left-color: #b8860b; }
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
-        .drawer-overlay.show { display: block; }
-        .layout-mobile .mobile-content { flex: 1; display: flex; flex-direction: column; padding: 12px 16px; overflow: hidden; }
-        .layout-mobile .mobile-content .canvas-wrapper { flex: 1; min-height: 200px; background: #0e0b10; border-radius: 16px; border: 1px solid #1e1620; overflow: hidden; position: relative; }
-        .layout-mobile .mobile-content .canvas-wrapper canvas { width: 100%; height: 100%; display: block; background: #0e0b10; }
-        .layout-mobile .mobile-content .info-area { flex: 0 0 auto; max-height: 45vh; overflow-y: auto; padding: 12px 0; display: flex; flex-direction: column; gap: 10px; }
-        .layout-mobile .mobile-content .step-indicator { display: flex; gap: 6px; flex-wrap: wrap; }
-        .layout-mobile .mobile-content .step-dot { padding: 4px 12px; border-radius: 40px; background: #1e1620; color: #5a4a3a; font-size: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
-        .layout-mobile .mobile-content .step-dot.active { background: #2a1f28; color: #e8d4b8; border-color: #b8860b; }
-        .layout-mobile .mobile-content .step-dot.done { background: #2a1f28; color: #b89a7a; }
-        .layout-mobile .mobile-content .step-content { background: #120e14; border-radius: 16px; padding: 16px; border: 1px solid #1e1620; min-height: 100px; }
-        .layout-mobile .mobile-content .step-content .quote-text { font-size: 18px; color: #e8d4b8; line-height: 1.6; padding: 8px 0; }
-        .layout-mobile .mobile-content .step-content .explain-text { font-size: 14px; color: #8a7a6a; line-height: 1.8; }
-        .layout-mobile .mobile-content .slider-group { display: flex; align-items: center; gap: 12px; background: #120e14; padding: 10px 14px; border-radius: 40px; border: 1px solid #1e1620; }
-        .layout-mobile .mobile-content .slider-group label { font-size: 13px; color: #8a7a6a; white-space: nowrap; }
-        .layout-mobile .mobile-content .slider-group input[type="range"] { flex: 1; accent-color: #b8860b; height: 4px; }
-        .layout-mobile .mobile-content .slider-group .val { font-size: 14px; color: #b8860b; min-width: 32px; text-align: center; }
-        .layout-mobile .mobile-nav { display: flex; gap: 12px; padding: 8px 0; }
-        .layout-mobile .mobile-nav button { flex: 1; padding: 10px; border-radius: 40px; border: 1px solid #2a1f28; background: #120e14; color: #b89a7a; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .layout-mobile .mobile-nav button:hover { background: #1e1620; border-color: #b8860b; }
-        .layout-mobile .mobile-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
-        body.mobile-mode .layout-desktop { display: none !important; }
-        body.mobile-mode .layout-mobile { display: flex !important; }
-        body.desktop-mode .layout-desktop { display: flex !important; }
-        body.desktop-mode .layout-mobile { display: none !important; }
-        @media (max-width: 768px) { body:not(.desktop-mode) .layout-desktop { display: none !important; } body:not(.desktop-mode) .layout-mobile { display: flex !important; } body:not(.mobile-mode) .layout-desktop { display: none !important; } body:not(.mobile-mode) .layout-mobile { display: flex !important; } }
-        @media (min-width: 769px) { body:not(.mobile-mode) .layout-desktop { display: flex !important; } body:not(.mobile-mode) .layout-mobile { display: none !important; } body.desktop-mode .layout-desktop { display: flex !important; } body.desktop-mode .layout-mobile { display: none !important; } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0e0b10; }
-        ::-webkit-scrollbar-thumb { background: #2a1f28; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3a2a30; }
+        body { background: #f3efe8; font-family: 'Georgia', 'Songti SC', serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 280px; background: #2d241c; color: #ddd0c0; padding: 20px 0; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; z-index: 10; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #4a3f35; margin-bottom: 15px; }
+        .sidebar-header h2 { font-weight: 300; letter-spacing: 6px; color: #f5efe6; font-size: 20px; text-align: center; }
+        .sidebar-header .sub { font-size: 12px; color: #8a7b6b; text-align: center; letter-spacing: 2px; margin-top: 4px; }
+        .btn-overview { display: block; margin: 0 15px 15px; padding: 12px; background: #4a3f35; color: #f5efe6; text-align: center; border-radius: 60px; font-size: 15px; letter-spacing: 4px; cursor: pointer; transition: 0.2s; border: 1px solid #6b5d4e; }
+        .btn-overview:hover { background: #6b5d4e; transform: scale(1.02); }
+        .menu-item { padding: 12px 25px; cursor: pointer; transition: 0.15s; border-left: 4px solid transparent; font-size: 15px; letter-spacing: 1px; color: #b7a692; }
+        .menu-item:hover { background: #3f3228; color: #fff; }
+        .menu-item.active { background: #3f3228; color: #f5efe6; border-left-color: #b45f3b; font-weight: 500; }
+        .main { flex: 1; display: flex; flex-direction: column; padding: 25px 35px; overflow: hidden; background: #fcf9f2; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8ddd0; padding-bottom: 12px; margin-bottom: 20px; flex-shrink: 0; }
+        .top-bar .title-group { display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap; }
+        .top-bar h1 { font-weight: 400; color: #2d241c; font-size: 26px; letter-spacing: 3px; }
+        .top-bar .tag { background: #2d241c; color: #f5efe6; padding: 3px 16px; border-radius: 40px; font-size: 13px; letter-spacing: 1px; }
+        .action-btns { display: flex; gap: 12px; }
+        .action-btns button { background: transparent; border: 1px solid #cbbeb0; padding: 8px 20px; border-radius: 60px; font-size: 14px; font-family: inherit; color: #4a3f35; cursor: pointer; transition: 0.2s; background: #faf6f0; display: flex; align-items: center; gap: 6px; }
+        .action-btns button:hover { background: #4a3f35; color: #fcf9f2; border-color: #4a3f35; }
+        .action-btns .btn-share { background: #8a5a3b; color: #fff; border-color: #8a5a3b; }
+        .action-btns .btn-share:hover { background: #6b452d; border-color: #6b452d; }
+        .scroll-content { flex: 1; overflow-y: auto; padding-right: 5px; }
+        #captureArea { transition: all 0.2s; }
+        .overview-panel { display: none; background: #f5efe6; border-radius: 32px; padding: 30px; margin-bottom: 20px; border: 1px solid #e2d6c8; }
+        .overview-panel.active { display: block; }
+        .overview-panel h3 { font-weight: 300; letter-spacing: 6px; text-align: center; color: #4a3f35; margin-bottom: 20px; font-size: 20px; }
+        .mermaid-wrapper { background: #ffffff; padding: 20px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow-x: auto; }
+        .study-module { display: block; }
+        .study-module.hidden { display: none; }
+        .step-indicator { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .step-dot { padding: 8px 22px; border-radius: 60px; background: #e8ddd0; color: #8a7b6b; font-size: 14px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .step-dot.active { background: #2d241c; color: #f5efe6; border-color: #2d241c; }
+        .step-dot.done { background: #b7a692; color: #fff; }
+        .step-dot.science { background: #8a5a3b; color: #fff; }
+        .step-dot.science.active { background: #4a2a1a; border-color: #4a2a1a; }
+        .step-content { background: #ffffff; border-radius: 28px; padding: 30px; border: 1px solid #e8ddd0; min-height: 240px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .step-content .step-label { font-size: 13px; color: #b3a496; letter-spacing: 3px; margin-bottom: 8px; }
+        .step-content .step-title { font-size: 22px; font-weight: 500; color: #2d241c; border-bottom: 1px dashed #e8ddd0; padding-bottom: 12px; margin-bottom: 15px; }
+        .step-content .step-body { font-size: 16px; line-height: 1.9; color: #4a3f35; }
+        .step-content .step-body .quote-text { font-size: 24px; line-height: 1.6; color: #8a5a3b; font-weight: 500; padding: 15px 20px; background: #faf6f0; border-radius: 16px; margin: 10px 0; }
+        .step-content .step-body .func-hint { display: inline-block; background: #2d241c; color: #f5efe6; padding: 2px 16px; border-radius: 40px; font-size: 14px; margin-top: 10px; }
+        .science-card { background: #f7f1ea; border-radius: 20px; padding: 20px; border-left: 6px solid #8a5a3b; margin: 15px 0; }
+        .science-card .field { font-size: 14px; color: #b45f3b; letter-spacing: 2px; margin-bottom: 6px; }
+        .science-card .concept { font-size: 16px; line-height: 1.8; color: #2d241c; }
+        .science-card .experiment { background: #ffffff; padding: 15px; border-radius: 16px; margin: 12px 0; border: 1px solid #e2d6c8; color: #2d241c; }
+        .science-card .experiment::before { content: "🧪 "; }
+        .science-card .challenge { background: #f5efe6; padding: 15px; border-radius: 16px; margin-top: 12px; border: 2px dashed #8a5a3b; color: #2d241c; }
+        .science-card .challenge::before { content: "💡 "; font-weight: bold; }
+        .slider-group { margin-top: 20px; background: #f5efe6; padding: 15px 20px; border-radius: 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .slider-group label { font-size: 14px; color: #4a3f35; letter-spacing: 1px; }
+        .slider-group input[type="range"] { flex: 1; min-width: 150px; accent-color: #8a5a3b; height: 6px; border-radius: 10px; }
+        .slider-group .val { font-size: 15px; font-weight: bold; color: #8a5a3b; min-width: 40px; }
+        .canvas-wrapper { background: #ffffff; border-radius: 24px; padding: 15px; border: 1px solid #e2d6c8; margin-top: 5px; }
+        canvas { width: 100%; height: auto; display: block; background: #ffffff; border-radius: 16px; }
+        .nav-chapter { display: flex; justify-content: space-between; margin-top: 20px; gap: 15px; flex-wrap: wrap; }
+        .nav-chapter button { padding: 12px 30px; border-radius: 60px; border: 1px solid #cbbeb0; background: transparent; font-family: inherit; font-size: 15px; color: #4a3f35; cursor: pointer; transition: 0.2s; background: #faf6f0; }
+        .nav-chapter button:hover { background: #2d241c; color: #f5efe6; border-color: #2d241c; }
+        @media (max-width: 800px) { body { flex-direction: column; height: auto; } .sidebar { width: 100%; max-height: 250px; flex-direction: row; flex-wrap: wrap; padding: 10px; overflow-y: auto; } .sidebar-header { display: none; } .btn-overview { margin: 5px 10px; padding: 8px; font-size: 13px; } .menu-item { padding: 6px 15px; font-size: 13px; border-left: none; border-bottom: 2px solid transparent; } .main { padding: 15px; } .top-bar { flex-direction: column; align-items: stretch; gap: 10px; } }
     </style>
 </head>
 <body>
-
-    <button class="mode-toggle" id="modeToggle">
-        <span class="icon" id="modeIcon">🖥️</span>
-        <span id="modeLabel">桌面</span>
-    </button>
-
-    <!-- 桌面布局 -->
-    <div class="layout-desktop" id="desktopLayout">
-        <div class="sidebar">
-            <div class="sidebar-header"><h2>☯ 道·模块</h2><div class="sub">81章 · 自定义视口</div></div>
-            <div class="btn-overview" id="toggleOverviewBtn">📐 总览 · 学习架构</div>
-            <div id="menuContainer"></div>
-        </div>
-        <div class="main">
-            <div class="top-bar">
-                <div class="title-group"><h1 id="pageTitle">道可道·非常道</h1><span class="tag" id="pageTypeTag">量子概率波</span></div>
-                <div class="action-btns">
-                    <button id="shareBtn" class="btn-share">📷 分享截图</button>
-                    <button id="resetZoomBtn">⟳ 重置视图</button>
-                </div>
-            </div>
-            <div class="scroll-content" id="scrollContent">
-                <div id="captureArea">
-                    <div class="overview-panel" id="overviewPanel" style="display:none; background:#1a1420; border-radius:24px; padding:20px; margin-bottom:20px; border:1px solid #2a1f28;">
-                        <h3 style="color:#d4c0a8; text-align:center; font-weight:300; letter-spacing:6px;">⚡ 道 · 函数学习架构</h3>
-                        <div class="mermaid-wrapper" style="background:#0e0b10; padding:16px; border-radius:16px; overflow-x:auto;">
-                            <div class="mermaid">graph LR
-                                classDef dao fill:#1a1420,stroke:#8a5a3b,stroke-width:2px,color:#d4c0a8;
-                                classDef func fill:#0e0b10,stroke:#3a2a30,stroke-width:2px,color:#b89a7a;
-                                classDef step fill:#1a1420,stroke:#3b5e6b,stroke-width:2px,color:#8ab0b8;
-                                subgraph 学习流程[分步研读流程] direction LR
-                                S1(1️⃣ 观象):::step --> S2(2️⃣ 读经):::step --> S3(3️⃣ 演道):::step --> S4(4️⃣ 悟理):::step --> S5(5️⃣ 格物):::step
-                                end
-                                subgraph 核心模块[道德经 · 函数图谱] direction TB
-                                A1(🌿 线性):::func; A2(🌀 收敛):::func; A3(🚀 指数):::func; A4(📉 对数):::func; A5(⛰️ U型):::func; A6(📊 高斯):::func
-                                end
-                                subgraph 跨学科格物[⚛️ 物理 · 🧬 生物 · 🧠 心理]
-                                B1[量子力学]:::dao; B2[热力学熵]:::dao; B3[认知心理]:::dao
-                                end
-                                学习流程 --> 核心模块 --> 跨学科格物
-                                style 学习流程 fill:#0e0b10,stroke:#2a1f28
-                                style 核心模块 fill:#0e0b10,stroke:#2a1f28
-                                style 跨学科格物 fill:#0e0b10,stroke:#2a1f28
-                            </div>
-                        </div>
-                        <div style="text-align:center; margin-top:12px; font-size:12px; color:#5a4a3a;">💡 第5步「格物」用现代科学实证道的奥义</div>
-                    </div>
-                    <div class="study-module" id="studyModule">
-                        <div class="step-indicator" id="stepIndicator" style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
-                            <div class="step-dot active" data-step="1">1️⃣ 观象</div>
-                            <div class="step-dot" data-step="2">2️⃣ 读经</div>
-                            <div class="step-dot" data-step="3">3️⃣ 演道</div>
-                            <div class="step-dot" data-step="4">4️⃣ 悟理</div>
-                            <div class="step-dot science" data-step="5" id="scienceStepBtn" style="display:none;">5️⃣ 格物</div>
-                        </div>
-                        <div class="step-content" id="stepContent" style="background:#120e14; border-radius:20px; padding:20px; border:1px solid #1e1620; min-height:160px; margin-bottom:16px;"></div>
-                        <div class="canvas-wrapper" style="background:#0e0b10; border-radius:16px; padding:8px; border:1px solid #1e1620;">
-                            <canvas id="functionCanvas" width="700" height="400"></canvas>
-                        </div>
-                        <div class="slider-group" style="display:flex; align-items:center; gap:16px; background:#120e14; padding:10px 16px; border-radius:40px; border:1px solid #1e1620; margin-top:12px;">
-                            <label for="paramSlider" style="font-size:14px; color:#8a7a6a;">🌀 调节参数 :</label>
-                            <input type="range" id="paramSlider" min="0.2" max="3.0" step="0.1" value="1.0" style="flex:1; accent-color:#b8860b;">
-                            <span class="val" id="paramVal" style="font-size:15px; color:#b8860b; min-width:36px;">1.0</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-top:16px; gap:12px;">
-                            <button id="prevChapterBtn" style="padding:10px 24px; border-radius:40px; border:1px solid #2a1f28; background:transparent; color:#b89a7a; cursor:pointer;">⬅ 上一章</button>
-                            <button id="nextChapterBtn" style="padding:10px 24px; border-radius:40px; border:1px solid #2a1f28; background:transparent; color:#b89a7a; cursor:pointer;">下一章 ➡</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="sidebar">
+    <div class="sidebar-header"><h2>☯ 道·模块</h2><div class="sub">81章 · 格物致知（完整内嵌）</div></div>
+    <div class="btn-overview" id="toggleOverviewBtn">📐 总览 · 学习架构</div>
+    <div id="menuContainer"></div>
+</div>
+<div class="main">
+    <div class="top-bar">
+        <div class="title-group"><h1 id="pageTitle">道可道·非常道</h1><span class="tag" id="pageTypeTag">量子概率波</span></div>
+        <div class="action-btns"><button id="shareBtn" class="btn-share">📷 分享截图</button><button id="resetZoomBtn">⟳ 重置视图</button></div>
     </div>
-
-    <!-- 移动布局 -->
-    <div class="layout-mobile" id="mobileLayout">
-        <div class="mobile-header">
-            <button class="menu-hamburger" id="menuHamburger">☯</button>
-            <h1 id="mobileTitle">道可道·非常道</h1>
-            <button class="menu-hamburger" id="mobileShareBtn" style="font-size:18px;">📷</button>
-        </div>
-        <div class="drawer-overlay" id="drawerOverlay"></div>
-        <div class="mobile-drawer" id="mobileDrawer">
-            <div class="drawer-header"><h2>☯ 道·模块</h2><div class="sub">81章 · 自定义视口</div></div>
-            <div id="mobileMenuContainer"></div>
-        </div>
-        <div class="mobile-content">
-            <div class="canvas-wrapper"><canvas id="mobileCanvas" width="700" height="400"></canvas></div>
-            <div class="info-area">
-                <div class="step-indicator" id="mobileStepIndicator">
+    <div class="scroll-content" id="scrollContent">
+        <div id="captureArea">
+            <div class="overview-panel" id="overviewPanel">
+                <h3>⚡ 道 · 函数学习架构（数理格物版）</h3>
+                <div class="mermaid-wrapper"><div class="mermaid">graph LR
+                        classDef dao fill:#f5efe6,stroke:#8a5a3b,stroke-width:2px,color:#4a3f35;
+                        classDef func fill:#ffffff,stroke:#b7a692,stroke-width:2px,stroke-dasharray:5 2,color:#2d241c;
+                        classDef step fill:#eaf1f2,stroke:#3b5e6b,stroke-width:2px,color:#1e2c33;
+                        subgraph 学习流程[分步研读流程] direction LR
+                        S1(1️⃣ 观象):::step --> S2(2️⃣ 读经):::step --> S3(3️⃣ 演道):::step --> S4(4️⃣ 悟理):::step --> S5(5️⃣ 格物):::step
+                        end
+                        subgraph 核心模块[道德经 · 函数图谱] direction TB
+                        A1(🌿 线性):::func; A2(🌀 收敛):::func; A3(🚀 指数):::func; A4(📉 对数):::func; A5(⛰️ U型):::func; A6(📊 高斯):::func
+                        end
+                        subgraph 跨学科格物[⚛️ 物理 · 🧬 生物 · 🧠 心理]
+                        B1[量子力学]:::dao; B2[热力学熵]:::dao; B3[认知心理]:::dao
+                        end
+                        学习流程 --> 核心模块 --> 跨学科格物
+                        style 学习流程 fill:#f9f6f0,stroke:#ddd0c0
+                        style 核心模块 fill:#f4f7f8,stroke:#c8dadd
+                        style 跨学科格物 fill:#f5efe6,stroke:#8a5a3b
+                </div></div>
+                <div style="text-align:center; margin-top:15px; font-size:13px; color:#8a7b6b;">💡 第5步「格物」用现代科学实证道的奥义</div>
+            </div>
+            <div class="study-module" id="studyModule">
+                <div class="step-indicator" id="stepIndicator">
                     <div class="step-dot active" data-step="1">1️⃣ 观象</div>
                     <div class="step-dot" data-step="2">2️⃣ 读经</div>
                     <div class="step-dot" data-step="3">3️⃣ 演道</div>
                     <div class="step-dot" data-step="4">4️⃣ 悟理</div>
-                    <div class="step-dot science" data-step="5" id="mobileScienceBtn" style="display:none;">5️⃣ 格物</div>
+                    <div class="step-dot science" data-step="5" id="scienceStepBtn" style="display:none;">5️⃣ 格物</div>
                 </div>
-                <div class="step-content" id="mobileStepContent">
-                    <div class="quote-text" id="mobileQuote">道可道，非常道；名可名，非常名。</div>
-                    <div class="explain-text" id="mobileExplain">道如同量子力学的波函数，一旦用语言去定义它就坍缩为具体形态。</div>
-                </div>
-                <div class="slider-group">
-                    <label>🌀</label>
-                    <input type="range" id="mobileSlider" min="0.2" max="3.0" step="0.1" value="1.0">
-                    <span class="val" id="mobileSliderVal">1.0</span>
-                </div>
-                <div class="mobile-nav">
-                    <button id="mobilePrevBtn">⬅ 上一章</button>
-                    <button id="mobileNextBtn">下一章 ➡</button>
-                </div>
+                <div class="step-content" id="stepContent"></div>
+                <div class="canvas-wrapper"><canvas id="functionCanvas" width="700" height="400"></canvas></div>
+                <div class="slider-group"><label for="paramSlider">🌀 调节参数 :</label><input type="range" id="paramSlider" min="0.2" max="3.0" step="0.1" value="1.0"><span class="val" id="paramVal">1.0</span></div>
+                <div class="nav-chapter"><button id="prevChapterBtn">⬅ 上一章</button><button id="nextChapterBtn">下一章 ➡</button></div>
             </div>
         </div>
     </div>
-
+</div>
+<script>
     // ============================================================
     //  📦 道德经 · 81章完整数据（内嵌）
     // ============================================================
@@ -1010,422 +935,194 @@
         }
     };
 
-         // ============================================================
-        //  🚀 核心引擎 (完整视口支持)
-        // ============================================================
-        const MODULES = DDJ_DATA;
-        const MENU_ORDER = Object.keys(MODULES);
+    // ============================================================
+    //  🚀 核心引擎（与测试版一致）
+    // ============================================================
+    const MODULES = DDJ_DATA;
+    const MENU_ORDER = Object.keys(MODULES);
 
-        let mainCanvas, mainCtx, mainW, mainH;
-        let mobileCanvas, mobileCtx, mobileW, mobileH;
-        const pad = 50;
-        let currentParam = 1.0, currentKey = MENU_ORDER[0] || '', currentStep = 1;
+    const canvas = document.getElementById('functionCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = 50;
+    let currentParam = 1.0, currentKey = MENU_ORDER[0] || '';
+    let currentStep = 1;
 
-        // ---- 坐标换算 (动态边界) ----
-        function toPixelX(x, w, min, max) { return pad + (x - min) / (max - min) * (w - 2 * pad); }
-        function toPixelY(y, h, min, max) { return pad + (max - y) / (max - min) * (h - 2 * pad); }
+    function toPixelX(x) { return pad + (x + 3.5) / 7 * (W - 2 * pad); }
+    function toPixelY(y) { return pad + (3.5 - y) / 7 * (H - 2 * pad); }
 
-        // ---- 背景 ----
-        function drawBackground(ctx, w, h) {
-            const grad = ctx.createRadialGradient(w/2, h/2, 50, w/2, h/2, 450);
-            grad.addColorStop(0, '#1e161c');
-            grad.addColorStop(0.5, '#140e12');
-            grad.addColorStop(1, '#0a080c');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, w, h);
-            ctx.fillStyle = 'rgba(180, 150, 120, 0.03)';
-            for (let i = 0; i < 30; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.random() * w, Math.random() * h, 0.5 + Math.random() * 1.5, 0, Math.PI * 2);
-                ctx.fill();
-            }
+    function drawGrid() {
+        ctx.strokeStyle = "#e8ddd0"; ctx.lineWidth = 0.5;
+        for (let i = -3; i <= 3; i++) { if (i === 0) continue;
+            ctx.beginPath(); ctx.moveTo(toPixelX(i), pad); ctx.lineTo(toPixelX(i), H - pad); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad, toPixelY(i)); ctx.lineTo(W - pad, toPixelY(i)); ctx.stroke();
+        }
+        ctx.strokeStyle = "#4a3f35"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(pad, toPixelY(0)); ctx.lineTo(W - pad, toPixelY(0)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(toPixelX(0), pad); ctx.lineTo(toPixelX(0), H - pad); ctx.stroke();
+        ctx.font = "14px serif"; ctx.fillStyle = "#4a3f35";
+        ctx.fillText("x", W - pad + 5, toPixelY(0) + 5); ctx.fillText("y", toPixelX(0) + 5, pad - 5);
+        ctx.fillText("O", toPixelX(0) - 18, toPixelY(0) - 8);
+    }
+
+    function drawFunction(type, param) {
+        ctx.clearRect(0, 0, W, H);
+        drawGrid();
+        ctx.strokeStyle = "#b45f3b";
+        ctx.lineWidth = 3.5;
+        ctx.shadowColor = "rgba(180, 95, 59, 0.2)";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+
+        let points = 300, startX = -3.2, endX = 3.2;
+        let funcY = (x) => 0;
+
+        switch(type) {
+            case 'converge':   funcY = (x) => (Math.abs(x) < 0.05) ? NaN : param / x; break;
+            case 'linear':     funcY = (x) => param * x; break;
+            case 'exp':        funcY = (x) => Math.exp(param * x); break;
+            case 'log':        funcY = (x) => (x > 0) ? param * Math.log(x) : NaN; break;
+            case 'quadratic':  funcY = (x) => param * x * x; break;
+            case 'sigmoid':    funcY = (x) => 2.5 / (1 + Math.exp(-param * x)) - 1.25; break;
+            case 'gaussian':   funcY = (x) => 3 * Math.exp(-param * x * x); break;
+            case 'sine':       funcY = (x) => Math.sin(param * x * 1.8); break;
+            case 'cosine':     funcY = (x) => Math.cos(param * x * 1.8); break;
+            case 'damped':     funcY = (x) => Math.sin(x * 2.5) * Math.exp(-param * Math.abs(x)); break;
+            case 'sawtooth':   funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (v - 0.5) * 2.5; }; break;
+            case 'square':     funcY = (x) => Math.sign(Math.sin(param * x * 2)) * 2.2; break;
+            case 'triangle':   funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (Math.abs(v - 0.5) - 0.25) * 5; }; break;
+            default:           funcY = (x) => x;
         }
 
-        // ---- 网格 (动态刻度) ----
-        function drawGrid(ctx, w, h, xMin, xMax, yMin, yMax) {
-            ctx.save();
-            // 计算漂亮的刻度步长
-            let xStep = 1, yStep = 1;
-            let xRange = xMax - xMin, yRange = yMax - yMin;
-            if (xRange > 6) xStep = 2;
-            if (xRange > 12) xStep = 5;
-            if (xRange < 2) xStep = 0.5;
-            if (yRange > 6) yStep = 2;
-            if (yRange > 12) yStep = 5;
-            if (yRange < 2) yStep = 0.5;
-
-            // 虚线网格
-            ctx.setLineDash([4, 8]);
-            ctx.strokeStyle = 'rgba(80, 60, 70, 0.2)';
-            ctx.lineWidth = 0.8;
-            for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) {
-                if (Math.abs(x) < 0.01) continue;
-                ctx.beginPath();
-                ctx.moveTo(toPixelX(x, w, xMin, xMax), pad);
-                ctx.lineTo(toPixelX(x, w, xMin, xMax), h - pad);
-                ctx.stroke();
-            }
-            for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
-                if (Math.abs(y) < 0.01) continue;
-                ctx.beginPath();
-                ctx.moveTo(pad, toPixelY(y, h, yMin, yMax));
-                ctx.lineTo(w - pad, toPixelY(y, h, yMin, yMax));
-                ctx.stroke();
-            }
-
-            // 坐标轴
-            ctx.setLineDash([]);
-            ctx.strokeStyle = '#8a7a6a';
-            ctx.lineWidth = 1.8;
-            ctx.shadowColor = 'rgba(180, 150, 120, 0.2)';
-            ctx.shadowBlur = 8;
-            const x0 = toPixelX(0, w, xMin, xMax);
-            const y0 = toPixelY(0, h, yMin, yMax);
-            ctx.beginPath();
-            ctx.moveTo(pad, y0);
-            ctx.lineTo(w - pad + 10, y0);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x0, pad);
-            ctx.lineTo(x0, h - pad + 10);
-            ctx.stroke();
-
-            // 箭头
-            ctx.fillStyle = '#8a7a6a';
-            ctx.shadowBlur = 6;
-            ctx.beginPath();
-            ctx.moveTo(w - pad + 10, y0);
-            ctx.lineTo(w - pad, y0 - 6);
-            ctx.lineTo(w - pad, y0 + 6);
-            ctx.closePath();
-            ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(x0, pad - 10);
-            ctx.lineTo(x0 - 6, pad);
-            ctx.lineTo(x0 + 6, pad);
-            ctx.closePath();
-            ctx.fill();
-
-            // 刻度标签
-            ctx.shadowBlur = 0;
-            ctx.font = '12px "Georgia", serif';
-            ctx.fillStyle = '#6a5a4a';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) {
-                if (Math.abs(x) < 0.01) { ctx.fillStyle = '#b89a7a'; ctx.textBaseline = 'top'; ctx.fillText('O', x0 - 14, y0 + 8); continue; }
-                ctx.fillStyle = '#5a4a3a';
-                ctx.textBaseline = 'top';
-                ctx.fillText(parseFloat(x.toFixed(2)), toPixelX(x, w, xMin, xMax) - 6, y0 + 8);
-            }
-            ctx.textBaseline = 'middle';
-            for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
-                if (Math.abs(y) < 0.01) continue;
-                ctx.fillStyle = '#5a4a3a';
-                ctx.fillText(parseFloat(y.toFixed(2)), x0 + 10, toPixelY(y, h, yMin, yMax) - 4);
-            }
-            ctx.restore();
+        let started = false;
+        for (let i = 0; i <= points; i++) {
+            let t = i / points, x = startX + t * (endX - startX), y = funcY(x);
+            if (isNaN(y) || y > 5 || y < -5) continue;
+            let px = toPixelX(x), py = toPixelY(y);
+            if (!started || !isFinite(y)) { ctx.moveTo(px, py); started = true; }
+            else ctx.lineTo(px, py);
         }
+        ctx.stroke(); ctx.shadowBlur = 0;
+        ctx.fillStyle = "#b45f3b"; ctx.beginPath(); ctx.arc(toPixelX(0), toPixelY(0), 5, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = "#4a3f35"; ctx.font = "12px serif"; ctx.fillText("原点 · 道枢", toPixelX(0) + 10, toPixelY(0) - 10);
+    }
 
-        // ---- 核心绘图 (读取自定义视口) ----
-        function drawFunction(ctx, w, h, type, param) {
-            const data = MODULES[currentKey];
-            const view = data.view || {};
-            const xMin = view.xMin !== undefined ? view.xMin : -3.2;
-            const xMax = view.xMax !== undefined ? view.xMax : 3.2;
-            const yMin = view.yMin !== undefined ? view.yMin : -5;
-            const yMax = view.yMax !== undefined ? view.yMax : 5;
+    function renderMenu() {
+        const container = document.getElementById('menuContainer');
+        container.innerHTML = MENU_ORDER.map(key => `<div class="menu-item" data-type="${key}">☯ ${MODULES[key].title}</div>`).join('');
+        container.querySelectorAll('.menu-item').forEach(el => {
+            el.addEventListener('click', function() {
+                const type = this.dataset.type;
+                if (MODULES[type]) { document.getElementById('overviewPanel').classList.remove('active'); document.getElementById('studyModule').classList.remove('hidden'); loadModule(type, false); }
+            });
+        });
+    }
 
-            ctx.save();
-            let points = [];
-            const steps = 400;
-            let funcY = (x) => 0;
-            switch(type) {
-                case 'converge': funcY = (x) => (Math.abs(x) < 0.05) ? NaN : param / x; break;
-                case 'linear': funcY = (x) => param * x; break;
-                case 'exp': funcY = (x) => Math.exp(param * x); break;
-                case 'log': funcY = (x) => (x > 0) ? param * Math.log(x) : NaN; break;
-                case 'quadratic': funcY = (x) => param * x * x; break;
-                case 'sigmoid': funcY = (x) => 2.5 / (1 + Math.exp(-param * x)) - 1.25; break;
-                case 'gaussian': funcY = (x) => 3 * Math.exp(-param * x * x); break;
-                case 'sine': funcY = (x) => Math.sin(param * x * 1.8); break;
-                case 'cosine': funcY = (x) => Math.cos(param * x * 1.8); break;
-                case 'damped': funcY = (x) => Math.sin(x * 2.5) * Math.exp(-param * Math.abs(x)); break;
-                case 'sawtooth': funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (v - 0.5) * 2.5; }; break;
-                case 'square': funcY = (x) => Math.sign(Math.sin(param * x * 2)) * 2.2; break;
-                case 'triangle': funcY = (x) => { let p = 1.5/param; let v = (x % p)/p; return (Math.abs(v - 0.5) - 0.25) * 5; }; break;
-                default: funcY = (x) => x;
+    function renderStep(step, data) {
+        const container = document.getElementById('stepContent');
+        const hasScience = data.science && typeof data.science === 'object';
+        const scienceBtn = document.getElementById('scienceStepBtn');
+        if (hasScience) { scienceBtn.style.display = 'inline-block'; } else { scienceBtn.style.display = 'none'; if (step === 5) { step = 1; currentStep = 1; } }
+
+        const steps = {
+            1: { label: '第一步 · 观象', title: '🧐 观天地之象', body: `当前函数：<strong>${data.tag}</strong><br><br>请观察右侧曲线的整体形态。<span style="color:#8a5a3b;">试着在脑海中联想这句经文的气韵。</span><div class="func-hint">📐 曲线即道象</div>` },
+            2: { label: '第二步 · 读经', title: '📜 品圣人真言', body: `<div class="quote-text">「${data.quote}」</div><div style="margin-top:12px; color:#5f5244;">—— ${data.chapter}</div><div style="margin-top:15px; background:#faf6f0; padding:15px; border-radius:16px;">${data.explain}</div>` },
+            3: { label: '第三步 · 演道', title: '🎛️ 拖动滑块演道', body: `下方滑块正在调节函数的 <strong>核心参数</strong>（${data.tag}）。<br>试着左右拖动，观察曲线如何变化——<span style="color:#8a5a3b;">参数变了，曲线就变了；执念变了，心境就变了。</span>` },
+            4: { label: '第四步 · 悟理', title: '✨ 悟道 · 分享此刻', body: `你已经完成了「${data.title}」的完整学习闭环。<br><br>点击右上角的 <strong>“📷 分享截图”</strong> 按钮保存卡片。<div style="margin-top:15px; padding:15px; background:#eaf1f2; border-radius:16px; text-align:center;">🎯 道在日常，日用而不知。</div>` },
+            5: {
+                label: '第五步 · 格物致知',
+                title: '🔬 跨学科 · 科学实验证道',
+                body: hasScience ? `
+                    <div class="science-card">
+                        <div class="field">📌 ${data.science.field}</div>
+                        <div class="concept"><strong>核心理念：</strong>${data.science.concept}</div>
+                        <div class="experiment"><strong>实验模拟：</strong>${data.science.experiment}</div>
+                        <div class="challenge"><strong>思维挑战：</strong>${data.science.challenge}</div>
+                    </div>
+                    <div style="margin-top:15px; font-size:13px; color:#6b5d4e; text-align:center; background:#faf6f0; padding:8px; border-radius:40px;">🧪 用现代科学实验印证古老智慧</div>
+                ` : '<p style="color:#6b5d4e;">本章暂未收录科学实验</p>'
             }
-            for (let i = 0; i <= steps; i++) {
-                let t = i / steps;
-                let x = xMin + t * (xMax - xMin);
-                let y = funcY(x);
-                if (isNaN(y) || y < yMin || y > yMax) continue;
-                let px = toPixelX(x, w, xMin, xMax);
-                let py = toPixelY(y, h, yMin, yMax);
-                points.push({x: px, y: py});
-            }
-            if (points.length < 2) { ctx.restore(); return; }
+        };
+        const s = steps[step] || steps[1];
+        container.innerHTML = `<div class="step-label">${s.label}</div><div class="step-title">${s.title}</div><div class="step-body">${s.body}</div>`;
+        document.querySelectorAll('.step-dot').forEach(d => {
+            const num = parseInt(d.dataset.step);
+            d.classList.remove('active', 'done');
+            if (num === step) d.classList.add('active');
+            else if (num < step) d.classList.add('done');
+        });
+    }
 
-            // 辉光
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-            ctx.strokeStyle = 'rgba(184, 134, 11, 0.2)';
-            ctx.lineWidth = 12;
-            ctx.shadowColor = 'rgba(184, 134, 11, 0.3)';
-            ctx.shadowBlur = 25;
-            ctx.stroke();
-            // 核心线
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-            ctx.shadowColor = 'rgba(220, 180, 100, 0.5)';
-            ctx.shadowBlur = 10;
-            ctx.strokeStyle = '#e8c88a';
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
+    function loadModule(key, keepStep = true) {
+        const data = MODULES[key]; if (!data) return;
+        currentKey = key;
+        document.getElementById('pageTitle').innerText = data.title;
+        document.getElementById('pageTypeTag').innerText = data.tag;
+        currentParam = data.defaultParam || 1.0;
+        document.getElementById('paramSlider').value = currentParam;
+        document.getElementById('paramVal').innerText = currentParam.toFixed(1);
+        drawFunction(data.func, currentParam);
+        document.getElementById('overviewPanel').classList.remove('active');
+        document.getElementById('studyModule').classList.remove('hidden');
+        if (!keepStep) currentStep = 1;
+        if (currentStep === 5 && (!data.science || typeof data.science !== 'object')) currentStep = 1;
+        if (currentStep > 5) currentStep = 1;
+        renderStep(currentStep, data);
+        document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+        document.querySelector(`.menu-item[data-type="${key}"]`)?.classList.add('active');
+    }
 
-            // 示踪粒子
-            const now = Date.now() / 1000;
-            const idx = Math.floor((Math.sin(now * 0.4) * 0.5 + 0.5) * (points.length - 1));
-            if (points[idx]) {
-                ctx.shadowColor = 'rgba(255, 200, 100, 0.8)';
-                ctx.shadowBlur = 25;
-                ctx.beginPath();
-                ctx.arc(points[idx].x, points[idx].y, 3.5, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffddaa';
-                ctx.fill();
-                ctx.shadowBlur = 45;
-                ctx.beginPath();
-                ctx.arc(points[idx].x, points[idx].y, 1.8, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
-            }
-            // 原点
-            ctx.shadowBlur = 18;
-            ctx.shadowColor = 'rgba(184, 134, 11, 0.4)';
-            const x0 = toPixelX(0, w, xMin, xMax);
-            const y0 = toPixelY(0, h, yMin, yMax);
-            ctx.beginPath();
-            ctx.arc(x0, y0, 5, 0, Math.PI * 2);
-            ctx.fillStyle = '#b8860b';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.beginPath();
-            ctx.arc(x0, y0, 2, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffeedd';
-            ctx.fill();
-            ctx.restore();
-        }
+    // --- 事件绑定 ---
+    document.getElementById('toggleOverviewBtn').addEventListener('click', function() {
+        const panel = document.getElementById('overviewPanel'), study = document.getElementById('studyModule');
+        panel.classList.toggle('active');
+        if (panel.classList.contains('active')) { study.classList.add('hidden'); mermaid.run({ nodes: document.querySelectorAll('.mermaid') }); }
+        else { study.classList.remove('hidden'); loadModule(currentKey, true); }
+    });
 
-        function renderAllCanvases() {
-            if (!mainCtx || !mobileCtx) return;
+    document.querySelectorAll('.step-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+            if (document.getElementById('overviewPanel').classList.contains('active')) return;
+            const step = parseInt(this.dataset.step);
             const data = MODULES[currentKey];
             if (!data) return;
-            const view = data.view || {};
-            const xMin = view.xMin !== undefined ? view.xMin : -3.2;
-            const xMax = view.xMax !== undefined ? view.xMax : 3.2;
-            const yMin = view.yMin !== undefined ? view.yMin : -5;
-            const yMax = view.yMax !== undefined ? view.yMax : 5;
-
-            [mainCtx, mobileCtx].forEach((ctx, idx) => {
-                const w = idx === 0 ? mainW : mobileW;
-                const h = idx === 0 ? mainH : mobileH;
-                drawBackground(ctx, w, h);
-                drawGrid(ctx, w, h, xMin, xMax, yMin, yMax);
-                drawFunction(ctx, w, h, data.func, currentParam);
-            });
-        }
-
-        // ---- UI 更新 ----
-        function updateUI(key) {
-            const data = MODULES[key];
-            if (!data) return;
-            currentKey = key;
-            currentParam = data.defaultParam || 1.0;
-            document.getElementById('pageTitle').innerText = data.title;
-            document.getElementById('pageTypeTag').innerText = data.tag;
-            document.getElementById('paramSlider').value = currentParam;
-            document.getElementById('paramVal').innerText = currentParam.toFixed(1);
-            document.getElementById('mobileTitle').innerText = data.title;
-            document.getElementById('mobileQuote').innerText = data.quote;
-            document.getElementById('mobileExplain').innerText = data.explain;
-            document.getElementById('mobileSlider').value = currentParam;
-            document.getElementById('mobileSliderVal').innerText = currentParam.toFixed(1);
-
-            document.querySelectorAll('#menuContainer .menu-item').forEach(el => el.classList.remove('active'));
-            const di = document.querySelector(`#menuContainer .menu-item[data-type="${key}"]`);
-            if (di) di.classList.add('active');
-            document.querySelectorAll('#mobileMenuContainer .menu-item').forEach(el => el.classList.remove('active'));
-            const mi = document.querySelector(`#mobileMenuContainer .menu-item[data-type="${key}"]`);
-            if (mi) mi.classList.add('active');
-
-            renderStep(currentStep, data);
-            renderAllCanvases();
-        }
-
-        function renderStep(step, data) {
-            const hasScience = data.science && typeof data.science === 'object';
-            const steps = {
-                1: { label: '观象', body: `<div class="quote-text">当前函数：<strong>${data.tag}</strong></div><div class="explain-text">观察曲线形态。注意坐标轴范围（每章可自定义）。</div>` },
-                2: { label: '读经', body: `<div class="quote-text">「${data.quote}」</div><div class="explain-text">—— ${data.chapter}<br><br>${data.explain}</div>` },
-                3: { label: '演道', body: `<div class="explain-text">拖动滑块调参，曲线实时响应。</div>` },
-                4: { label: '悟理', body: `<div class="explain-text">完成研读，点击截图保存卡片。</div>` },
-                5: { label: '格物', body: hasScience ? `<div style="background:#1a1420;padding:16px;border-radius:16px;border-left:4px solid #b8860b;"><div style="font-size:13px;color:#8a7a6a;">📌 ${data.science.field}</div><div style="font-size:15px;color:#d4c0a8;margin:8px 0;"><strong>核心理念：</strong>${data.science.concept}</div><div style="font-size:14px;color:#b89a7a;">🧪 ${data.science.experiment}</div><div style="font-size:14px;color:#b89a7a;margin-top:8px;border-top:1px solid #2a1f28;padding-top:8px;">💡 ${data.science.challenge}</div></div>` : '<div class="explain-text">本章暂未收录科学实验。</div>' }
-            };
-            const s = steps[step] || steps[1];
-            document.getElementById('stepContent').innerHTML = `<div style="font-size:13px;color:#5a4a3a;letter-spacing:2px;">第${step}步 · ${s.label}</div>` + s.body;
-            const mc = document.getElementById('mobileStepContent');
-            mc.innerHTML = `<div style="font-size:12px;color:#5a4a3a;letter-spacing:2px;">第${step}步 · ${s.label}</div>` + s.body;
-
-            document.querySelectorAll('#stepIndicator .step-dot').forEach(d => {
-                const num = parseInt(d.dataset.step);
-                d.classList.remove('active', 'done');
-                if (num === step) d.classList.add('active');
-                else if (num < step) d.classList.add('done');
-            });
-            document.querySelectorAll('#mobileStepIndicator .step-dot').forEach(d => {
-                const num = parseInt(d.dataset.step);
-                d.classList.remove('active', 'done');
-                if (num === step) d.classList.add('active');
-                else if (num < step) d.classList.add('done');
-            });
-            const sb = document.getElementById('scienceStepBtn'), msb = document.getElementById('mobileScienceBtn');
-            if (hasScience) { sb.style.display = 'inline-block'; msb.style.display = 'inline-block'; } else { sb.style.display = 'none'; msb.style.display = 'none'; }
-        }
-
-        function loadModule(key) {
-            const data = MODULES[key];
-            if (!data) return;
-            currentKey = key;
-            currentParam = data.defaultParam || 1.0;
-            currentStep = 1;
-            updateUI(key);
-        }
-
-        // ---- 事件绑定 ----
-        function initEvents() {
-            document.querySelectorAll('#menuContainer .menu-item').forEach(el => el.addEventListener('click', function() { loadModule(this.dataset.type);
-                closeDrawer(); }));
-            document.querySelectorAll('#mobileMenuContainer .menu-item').forEach(el => el.addEventListener('click', function() { loadModule(this.dataset.type);
-                closeDrawer(); }));
-            document.getElementById('menuHamburger').addEventListener('click', () => { document.getElementById('mobileDrawer').classList.toggle('open');
-                document.getElementById('drawerOverlay').classList.toggle('show'); });
-            document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-
-            document.querySelectorAll('#stepIndicator .step-dot, #mobileStepIndicator .step-dot').forEach(dot => {
-                dot.addEventListener('click', function() {
-                    const step = parseInt(this.dataset.step);
-                    const data = MODULES[currentKey];
-                    if (step === 5 && (!data.science || typeof data.science !== 'object')) { alert('本章暂未收录科学实验'); return; }
-                    currentStep = step;
-                    renderStep(step, data);
-                });
-            });
-
-            document.getElementById('paramSlider').addEventListener('input', function() {
-                const val = parseFloat(this.value);
-                document.getElementById('paramVal').innerText = val.toFixed(1);
-                document.getElementById('mobileSlider').value = val;
-                document.getElementById('mobileSliderVal').innerText = val.toFixed(1);
-                currentParam = val;
-                renderAllCanvases();
-            });
-            document.getElementById('mobileSlider').addEventListener('input', function() {
-                const val = parseFloat(this.value);
-                document.getElementById('mobileSliderVal').innerText = val.toFixed(1);
-                document.getElementById('paramSlider').value = val;
-                document.getElementById('paramVal').innerText = val.toFixed(1);
-                currentParam = val;
-                renderAllCanvases();
-            });
-
-            document.getElementById('prevChapterBtn').addEventListener('click', function() { let i = MENU_ORDER.indexOf(currentKey); if (i > 0) loadModule(MENU_ORDER[i - 1]); else alert('已是第一章'); });
-            document.getElementById('nextChapterBtn').addEventListener('click', function() { let i = MENU_ORDER.indexOf(currentKey); if (i < MENU_ORDER.length - 1) loadModule(MENU_ORDER[i + 1]); else alert('已是最后一章'); });
-            document.getElementById('mobilePrevBtn').addEventListener('click', function() { let i = MENU_ORDER.indexOf(currentKey); if (i > 0) loadModule(MENU_ORDER[i - 1]); else alert('已是第一章'); });
-            document.getElementById('mobileNextBtn').addEventListener('click', function() { let i = MENU_ORDER.indexOf(currentKey); if (i < MENU_ORDER.length - 1) loadModule(MENU_ORDER[i + 1]); else alert('已是最后一章'); });
-            document.getElementById('resetZoomBtn').addEventListener('click', function() { document.getElementById('scrollContent').scrollTop = 0; });
-
-            document.getElementById('shareBtn').addEventListener('click', function() { captureAndDownload('desktop'); });
-            document.getElementById('mobileShareBtn').addEventListener('click', function() { captureAndDownload('mobile'); });
-
-            document.getElementById('toggleOverviewBtn').addEventListener('click', function() {
-                const p = document.getElementById('overviewPanel');
-                if (p.style.display === 'none' || p.style.display === '') { p.style.display = 'block';
-                    mermaid.run({ nodes: document.querySelectorAll('.mermaid') }); } else { p.style.display = 'none'; }
-            });
-        }
-
-        function closeDrawer() { document.getElementById('mobileDrawer').classList.remove('open');
-            document.getElementById('drawerOverlay').classList.remove('show'); }
-
-        function captureAndDownload(mode) {
-            const el = mode === 'desktop' ? document.getElementById('captureArea') : document.getElementById('mobileLayout');
-            html2canvas(el, { scale: 1.8, useCORS: true, backgroundColor: '#0e0b10', logging: false }).then(c => {
-                const a = document.createElement('a');
-                a.download = `道德经_${currentKey}_卡片.png`;
-                a.href = c.toDataURL('image/png');
-                a.click();
-            }).catch(() => alert('截图生成失败'));
-        }
-
-        // ---- 初始化 ----
-        function initCanvases() {
-            mainCanvas = document.getElementById('functionCanvas');
-            mainCtx = mainCanvas.getContext('2d');
-            mainW = mainCanvas.width;
-            mainH = mainCanvas.height;
-            mobileCanvas = document.getElementById('mobileCanvas');
-            mobileCtx = mobileCanvas.getContext('2d');
-            mobileW = mobileCanvas.width;
-            mobileH = mobileCanvas.height;
-        }
-
-        function renderMenu() {
-            const html = MENU_ORDER.map(k => `<div class="menu-item" data-type="${k}">☯ ${MODULES[k].title}</div>`).join('');
-            document.getElementById('menuContainer').innerHTML = html;
-            document.getElementById('mobileMenuContainer').innerHTML = html;
-        }
-
-        function init() {
-            initCanvases();
-            renderMenu();
-            initEvents();
-            if (MENU_ORDER.length > 0) loadModule(MENU_ORDER[0]);
-            const toggleBtn = document.getElementById('modeToggle');
-            const modeIcon = document.getElementById('modeIcon');
-            const modeLabel = document.getElementById('modeLabel');
-            let currentMode = localStorage.getItem('preferredLayout') || 'auto';
-
-            function applyMode(m) {
-                document.body.classList.remove('mobile-mode', 'desktop-mode');
-                if (m === 'mobile') { document.body.classList.add('mobile-mode');
-                    modeIcon.textContent = '📱';
-                    modeLabel.textContent = '移动'; } else if (m === 'desktop') { document.body.classList.add('desktop-mode');
-                    modeIcon.textContent = '🖥️';
-                    modeLabel.textContent = '桌面'; } else { modeIcon.textContent = '🔄';
-                    modeLabel.textContent = '自动'; }
-                localStorage.setItem('preferredLayout', m);
-                currentMode = m;
+            if (step === 5 && (!data.science || typeof data.science !== 'object')) {
+                alert('本章暂未收录科学实验，敬请期待！');
+                return;
             }
-            const saved = localStorage.getItem('preferredLayout');
-            if (saved && (saved === 'mobile' || saved === 'desktop')) applyMode(saved);
-            else applyMode('auto');
-            toggleBtn.addEventListener('click', function() {
-                if (currentMode === 'auto') applyMode('mobile');
-                else if (currentMode === 'mobile') applyMode('desktop');
-                else applyMode('auto');
-            });
-            window.addEventListener('resize', renderAllCanvases);
-            function animate() { renderAllCanvases();
-                requestAnimationFrame(animate); }
-            animate();
-            console.log(`✅ 道德经 · 自定义视口引擎已启动 (${MENU_ORDER.length}章)`);
-        }
+            currentStep = step;
+            renderStep(step, data);
+        });
+    });
 
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-        else init();
-    </script>
+    document.getElementById('paramSlider').addEventListener('input', function() {
+        const val = parseFloat(this.value); document.getElementById('paramVal').innerText = val.toFixed(1);
+        currentParam = val; const data = MODULES[currentKey]; if (data) drawFunction(data.func, val);
+    });
+
+    document.getElementById('prevChapterBtn').addEventListener('click', function() {
+        let idx = MENU_ORDER.indexOf(currentKey); if (idx > 0) loadModule(MENU_ORDER[idx - 1], false); else alert('已是第一章');
+    });
+    document.getElementById('nextChapterBtn').addEventListener('click', function() {
+        let idx = MENU_ORDER.indexOf(currentKey); if (idx < MENU_ORDER.length - 1) loadModule(MENU_ORDER[idx + 1], false); else alert('已是最后一章');
+    });
+    document.getElementById('resetZoomBtn').addEventListener('click', function() { document.getElementById('scrollContent').scrollTop = 0; });
+
+    document.getElementById('shareBtn').addEventListener('click', function() {
+        const element = document.getElementById('captureArea');
+        element.style.background = '#fcf9f2';
+        html2canvas(element, { scale: 1.8, useCORS: true, backgroundColor: '#fcf9f2', logging: false, windowHeight: element.scrollHeight, windowWidth: element.scrollWidth }).then(canvas => {
+            element.style.background = '';
+            const link = document.createElement('a');
+            link.download = `道德经_${currentKey}_格物卡片.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(err => { alert('截图生成失败，请重试。'); console.error(err); });
+    });
+
+    renderMenu();
+    if (MENU_ORDER.length > 0) loadModule(MENU_ORDER[0], false);
+    else document.getElementById('pageTitle').innerText = '数据加载失败，请检查。';
+</script>
 </body>
 </html>
