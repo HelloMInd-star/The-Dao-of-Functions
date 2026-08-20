@@ -417,5 +417,4 @@ Perhaps the ancients modeled with "intuition," while we model with "mathematics.
   <br>
   <sub>「 Translating 2500-year-old wisdom into the language of 21st-century science 」</sub>
 </div>
-```
 
